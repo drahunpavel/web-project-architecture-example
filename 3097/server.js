@@ -66,8 +66,6 @@ webserver.get('/', (req, res) => {
 
 webserver.post('/processForm', urlencodedParser, [
 
-    logLineSync(logFN,"visited the page '/processForm' on port "+port),
-
     check('name')
         .not().isEmpty()
         .withMessage("Полу пустое")
@@ -91,7 +89,7 @@ webserver.post('/processForm', urlencodedParser, [
 
     if (errors.isEmpty()) {
 
-        logLineSync(logFN,"form successfully processed on port "+port);
+        logLineSync(logFN,`form successfully processed, get name: ${name}, age: ${age} on port `+port);
 
         res.send(
             `
