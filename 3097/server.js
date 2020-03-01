@@ -6,7 +6,7 @@ const bodyParser = require("body-parser");
 
 const webserver = express();
 
-const port = 3030;
+const port = 3097;
 
 const logFN = path.join(__dirname, '_server.log'); //логирование
 // создаем парсер для данных application/x-www-form-urlencoded
@@ -57,7 +57,7 @@ function assembleFormWithErrors(formData, validResult) {
     return {formBody: formBodyError}
 };
 
-webserver.get('/', (req, res) => { 
+webserver.get('/3097', (req, res) => { 
     res.send(formBody.join(''));
 });
 
