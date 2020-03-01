@@ -58,10 +58,16 @@ function assembleFormWithErrors(formData, validResult) {
 };
 
 webserver.get('/', (req, res) => { 
+
+    logLineSync(logFN,"visited the page '/' on port "+port);
+    
     res.send(formBody.join(''));
 });
 
 webserver.post('/processForm', urlencodedParser, [
+
+    logLineSync(logFN,"visited the page '/processForm' on port "+port),
+
     check('name')
         .not().isEmpty()
         .withMessage("Полу пустое")
@@ -84,6 +90,9 @@ webserver.post('/processForm', urlencodedParser, [
     const age = req.body.age;
 
     if (errors.isEmpty()) {
+
+        logLineSync(logFN,"form successfully processed on port "+port);
+
         res.send(
             `
                 <span>Форма отправлена</span>
@@ -93,6 +102,8 @@ webserver.post('/processForm', urlencodedParser, [
         );
     }else{
         const formBodyWithErrors = assembleFormWithErrors(req.body, errors);
+
+        logLineSync(logFN,`form processing errors, get name: ${name}, age: ${age} on port `+port);
 
         res.send(formBodyWithErrors.formBody.join(''));
     }
