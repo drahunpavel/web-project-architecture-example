@@ -7,10 +7,11 @@ const bodyParser = require("body-parser");
 const webserver = express();
 
 const port = 3030;
-const logFN = path.join(__dirname, '_server.log'); //логирование
 
+const logFN = path.join(__dirname, '_server.log'); //логирование
 // создаем парсер для данных application/x-www-form-urlencoded
 const urlencodedParser = bodyParser.urlencoded({extended: false});
+const { check, validationResult } = require('express-validator');
 
 const formBody = [
     `<form method="POST" action="/processForm">`,
@@ -35,53 +36,54 @@ function logLineSync(logFilePath,logLine) {
     fs.closeSync(logFd);
 };
 
-function validateForm(formData) {
+//собирает форму с ошибками
+function assembleFormWithErrors(formData, validResult) {
     const { name, age } = formData;
 
-    let isValid = false;
     let formBodyError = [...formBody];
 
     formBodyError[2] = formBody[2].replace(/value=""/, `value ="${name}"`);
     formBodyError[5] = formBody[5].replace(/value=""/, `value ="${age}"`);
 
-    //valid name
-    if(name.length === 0){
-        formBodyError[2] = formBodyError[2] + `<span style='color:red;'>Поле "Ваше имя" пустое<span>`;
-        isValid = true;
-    }else if(name.length > 15){
+    validResult.errors.forEach((item) => {
+        if(item.param === 'name'){
+            formBodyError[2] = formBodyError[2] + `<span style='color:red; margin-left: 10px'>${item.msg}<span>`;
+        };
+        if(item.param === 'age'){
+            formBodyError[5] = formBodyError[5] + `<span style='color:red; margin-left: 10px'>${item.msg}<span>`;
+        };
+    });
 
-        formBodyError[2] = formBodyError[2] + `<span style='color:red;'>Ерунда, а не имя<span>`;
-        isValid = true;
-    };
-    
-    //valid age
-    if(age.length === 0){
-        formBodyError[5] = formBodyError[5] + `<span style='color:red;'>Поле "Ваш возраст" пустое<span>`;
-        isValid = true;
-    }else if(+age < 6 || +age > 100){
-        formBodyError[5] = formBodyError[5] + `<span style='color:red;'>Лукавите, проверьте ваш возраст<span>`;
-        isValid = true;
-    }else if(!/[0-9]+$/.test(age)){
-        formBodyError[5] = formBodyError[5] + `<span style='color:red;'>Ерунду отправили, проверьте введенные данные<span>`;
-        isValid = true;
-    };
-
-    return {isValid, formBody: formBodyError};
+    return {formBody: formBodyError}
 };
 
 webserver.get('/', (req, res) => { 
     res.send(formBody.join(''));
 });
 
-webserver.post('/processForm', urlencodedParser, (req, res) => { 
-    if(!req.body) return req.sendStatus(400);
+webserver.post('/processForm', urlencodedParser, [
+    check('name')
+        .not().isEmpty()
+        .withMessage("Полу пустое")
+        .isLength({ min: 3, max: 15 })
+        .withMessage('Количество символов от 3х до 15ти')
+        .escape(),
+        
+    check('age')
+        .isNumeric()
+        .withMessage("Введены не цифры")
+        .not().isEmpty()
+        .withMessage("Полу пустое")
+        .isInt({min: 6, max: 90})
+        .withMessage('Возраст должен быть от 6 до 90')
+        .escape(),
+  ], (req, res) => {
+    const errors = validationResult(req);
 
-    const { name, age } = req.body
-    const validForm = validateForm(req.body);
+    const name = req.body.name;
+    const age = req.body.age;
 
-    if(validForm.isValid){
-        res.send(validForm.formBody.join(''));
-    }else{
+    if (errors.isEmpty()) {
         res.send(
             `
                 <span>Форма отправлена</span>
@@ -89,7 +91,11 @@ webserver.post('/processForm', urlencodedParser, (req, res) => {
                 <span>Возраст: ${age}</span>
             `
         );
-    };
+    }else{
+        const formBodyWithErrors = assembleFormWithErrors(req.body, errors);
+
+        res.send(formBodyWithErrors.formBody.join(''));
+    }
 });
 
 webserver.listen(port, () => {
