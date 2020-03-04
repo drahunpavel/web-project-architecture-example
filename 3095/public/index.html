@@ -1,0 +1,53 @@
+<html>
+
+<head>
+    <title>example 3095</title>
+    <meta charset="utf-8">
+    <style>
+        div, p, button{
+            margin: 10px 0 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id='content'>
+        <button id='uploadButton' onclick="uploadAnswerOptions()">Upload answer options</button>
+        <p>Please select your preferred contact method:</p>
+        <div id='blockInput'> </div>
+        <button id='sendButton' type="submit" onclick="sendAsnwers()">Send</button>
+    </div>
+
+    <script>
+        let host = window.location.href;
+        let blockInput = document.getElementById("blockInput");
+        let uploadButton = document.getElementById("uploadButton");
+        let sendButton = document.getElementById("sendButton");
+        let variants = [];
+
+        uploadButton.disabled = false;
+        sendButton.disabled = true;
+
+        async function uploadAnswerOptions() {
+    
+            let url = `${host}variants`;
+            let response = await fetch(url);
+    
+            let data = await response.json(); // читаем ответ в формате JSON
+            variants = data;
+            uploadButton.disabled = true;
+            sendButton.disabled = false;
+
+            let inputList = variants.map((item) => {
+                blockInput.innerHTML += `
+                    <input type="radio" id=${item.id} name="contact" value=${item.title}>
+                    <label for=${item.id}>${item.title}</label>
+                `
+            });
+        };
+
+        async function sendAsnwers(){
+            console.log('--sendAsnwers')
+        };
+    </script>
+</body>
+</html>

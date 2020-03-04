@@ -1,0 +1,14 @@
+[
+    {
+        "id": "contactChoice1",
+        "title": "Email"
+    },
+    {
+        "id": "contactChoice2",
+        "title": "Phone"
+    },
+    {
+        "id": "contactChoice3",
+        "title": "Pigeon mail"
+    }
+]
