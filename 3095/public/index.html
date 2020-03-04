@@ -13,16 +13,22 @@
     <div id='content'>
         <button id='uploadButton' onclick="uploadAnswerOptions()">Upload answer options</button>
         <p>Please select your preferred contact method:</p>
-        <div id='blockInput'> </div>
+        <div id='blockInput'></div>
+        <div id='blockAnswers'></div>
+        <button id='showStatistics' type="submit" onclick="showStatistics()">Show statistics</button>
         <button id='sendButton' type="submit" onclick="sendAsnwers()">Send</button>
     </div>
 
     <script>
         let host = window.location.href;
         let blockInput = document.getElementById("blockInput");
+        let blockAnswers = document.getElementById("blockAnswers");
         let uploadButton = document.getElementById("uploadButton");
         let sendButton = document.getElementById("sendButton");
+        let showButton = document.getElementById("showStatistics");
         let variants = [];
+        let answers = [];
+        let selectedVariants = null;
 
         uploadButton.disabled = false;
         sendButton.disabled = true;
@@ -35,19 +41,60 @@
             let data = await response.json(); // читаем ответ в формате JSON
             variants = data;
             uploadButton.disabled = true;
-            sendButton.disabled = false;
+
 
             let inputList = variants.map((item) => {
                 blockInput.innerHTML += `
-                    <input type="radio" id=${item.id} name="contact" value=${item.title}>
+                    <input type="radio" id=${item.id} name="contact" value=${item.title} onclick="checkType(this)">
                     <label for=${item.id}>${item.title}</label>
                 `
             });
         };
 
         async function sendAsnwers(){
-            console.log('--sendAsnwers')
+            blockAnswers.innerHTML = '';
+            let answer = {id: selectedVariants}
+
+            let url = `${host}vote`;
+            let response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(answer)
+            });
+
+            let result = await response.json();
+            answers = result;
+
+            let optionList = answers.map((item) => {
+                blockAnswers.innerHTML += `
+                    <p>Option: ${item.id}, amount: ${item.count}</p>
+                `
+            });
         };
+
+        async function showStatistics(){
+            blockAnswers.innerHTML = '';
+            
+            let url = `${host}stat`;
+            let response = await fetch(url);
+    
+            let data = await response.json(); // читаем ответ в формате JSON
+            answers = data;
+
+            let optionList = answers.map((item) => {
+                blockAnswers.innerHTML += `
+                    <p>Option: ${item.id}, amount: ${item.count}</p>
+                `
+            });
+        };
+
+        function checkType(node) {
+            selectedVariants = node.value;
+            sendButton.disabled = false;
+        };
+
     </script>
 </body>
 </html>

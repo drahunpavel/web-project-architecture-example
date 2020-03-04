@@ -34,33 +34,60 @@ webserver.get('/', (req, res) => {
             };
         }
     );
-    logLineSync(logFN,"visited the page '/' on port "+port);
+    
+    logLineSync(logFN,"visited the page '/' on port " + port);
 });
 
 webserver.get('/variants', (req, res) => { 
-    console.log('--я тут')
-    // logLineSync(logFN,"visited the page '/' on port "+port);
-
+    
     fs.readFile(path.join(__dirname, 'files', 'variants.json'), 'utf8', (err, data) => {
       if (err) throw err;
 
       res.setHeader("Content-Type", "application/json");
       res.send(data);
     });
+
+    logLineSync(logFN, "user get variants on port " + port);
 });
 
-webserver.post('/stat', (req, res) => { 
+webserver.get('/stat', (req, res) => { 
 
-    logLineSync(logFN,"visited the page '/' on port "+port);
-    
-    res.send("service2c ok!");
+    fs.readFile(path.join(__dirname, 'files', 'stat.json'), 'utf8', (err, data) => {
+        if (err) throw err;
+  
+        res.setHeader("Content-Type", "application/json");
+        res.send(data);
+      });
+  
+      logLineSync(logFN, "user get stat on port " + port);
 });
 
 webserver.post('/vote', (req, res) => { 
+    const { id } = req.body;
 
-    logLineSync(logFN,"visited the page '/' on port "+port);
-    
-    res.send("service2c ok!");
+    // logLineSync(logFN,"visited the page '/' on port "+port);
+    fs.readFile(path.join(__dirname, 'files', 'stat.json'), 'utf8', (err, data) => {
+        if (err) throw err;
+ 
+        let parsData = JSON.parse(data);
+
+        parsData.forEach((item) => {
+            if(item.id === id){
+                item.count += 1;
+            };
+        });
+
+        let jsonContent = JSON.stringify(parsData);
+
+        fs.writeFile("./files/stat.json", jsonContent, 'utf8', (err) => {
+            if (err) throw err;
+         
+            logLineSync(logFN, `JSON file: ${jsonContent} on port ` + port);
+            logLineSync(logFN, `JSON file stat.json has been saved on port ` + port);
+        });
+
+        res.send(parsData);
+      });
 });
 
 webserver.listen(port, () => {
