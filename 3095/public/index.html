@@ -1,5 +1,4 @@
 <html>
-
 <head>
     <title>example 3095</title>
     <meta charset="utf-8">
@@ -37,11 +36,10 @@
     
             let url = `${host}variants`;
             let response = await fetch(url);
-    
             let data = await response.json(); // читаем ответ в формате JSON
+
             variants = data;
             uploadButton.disabled = true;
-
 
             let inputList = variants.map((item) => {
                 blockInput.innerHTML += `
@@ -52,7 +50,9 @@
         };
 
         async function sendAsnwers(){
+
             blockAnswers.innerHTML = '';
+
             let answer = {id: selectedVariants}
 
             let url = `${host}vote`;
@@ -75,11 +75,11 @@
         };
 
         async function showStatistics(){
+            
             blockAnswers.innerHTML = '';
             
             let url = `${host}stat`;
             let response = await fetch(url);
-    
             let data = await response.json(); // читаем ответ в формате JSON
             answers = data;
 
@@ -91,6 +91,7 @@
         };
 
         function checkType(node) {
+
             selectedVariants = node.value;
             sendButton.disabled = false;
         };

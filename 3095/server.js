@@ -15,7 +15,7 @@ function logLineSync(logFilePath,logLine) {
     const logDT=new Date();
     let time=logDT.toLocaleDateString()+" "+logDT.toLocaleTimeString();
     let fullLogLine=time+" "+logLine;
-
+    console.log(fullLogLine);
     const logFd = fs.openSync(logFilePath, 'a+'); // и это же сообщение добавляем в лог-файл
     fs.writeSync(logFd, fullLogLine + os.EOL); // os.EOL - это символ конца строки, он разный для разных ОС
     fs.closeSync(logFd);
@@ -24,14 +24,11 @@ function logLineSync(logFilePath,logLine) {
 
 webserver.get('/', (req, res) => { 
 
-    res.setHeader("Access-Control-Allow-Origin","*"); 
-
     fs.readFile(path.join(__dirname, 'public', 'index.html'), 'utf-8', (err, content) => {
-            if(err){
-                throw err;
-            }else{
-                res.end(content)
-            };
+            if (err) throw err;   
+
+            res.setHeader("Access-Control-Allow-Origin","*");
+            res.end(content);
         }
     );
     
@@ -65,7 +62,6 @@ webserver.get('/stat', (req, res) => {
 webserver.post('/vote', (req, res) => { 
     const { id } = req.body;
 
-    // logLineSync(logFN,"visited the page '/' on port "+port);
     fs.readFile(path.join(__dirname, 'files', 'stat.json'), 'utf8', (err, data) => {
         if (err) throw err;
  
@@ -86,6 +82,7 @@ webserver.post('/vote', (req, res) => {
             logLineSync(logFN, `JSON file stat.json has been saved on port ` + port);
         });
 
+        res.setHeader("Content-Type", "application/json");
         res.send(parsData);
       });
 });
