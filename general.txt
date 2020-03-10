@@ -21,3 +21,26 @@ res.setHeader("X-XSS-Protection", "0"); // добавляем в ответ сп
  3540 - парсеры входных данных
 
  req.on - подписка на запрос
+
+video 3
+ res.locals - стандартное место, где можно хранить временные данные для дальнейшей обработки (3545)
+
+ пакет multer (3550). отправка файлов
+URLsearchparams работет только с form-urlencoded, а Formdata работает с multipartFromData
+
+content-Dispositipon - трактует вложенный файл (3560)
+
+отдает файлы (3570) Поток чтения из файла. readSream.pipe(res)
+
+двоичные данные  (3580)
+http://fe.it-academy.by/ViewSlides.php?slide=13129&lect=65
+
+CORS (3585)
+https://expressjs.com/en/resources/middleware/cors.html cors.middleware
+
+1-44 начинает про экспресс
+пути к файлу, работа с русскими урлами (4022)
+проверка через регулярку на .html (4025)
+по увсловию возвращаются content-type (4028)
+правильная раздача статики (4030)
+(4032) раздача статики и примение миделвары на логирование
