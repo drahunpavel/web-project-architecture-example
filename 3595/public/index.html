@@ -1,0 +1,181 @@
+<html>
+
+<head>
+    <title>example 3095</title>
+    <meta charset="utf-8">
+    <style>
+        div,
+        p,
+        button {
+            margin: 10px 0 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id='content'>
+        <button id='uploadButton' onclick="uploadAnswerOptions()">Upload answer options</button>
+        <p>Please select your preferred contact method:</p>
+        <div id='blockInput'></div>
+        <div id='blockAnswers'></div>
+        <button id='showStatistics' type="submit" onclick="showStatistics()">Show statistics</button>
+        <button id='sendButton' type="submit" onclick="sendAsnwers()">Send</button>
+        <hr />
+        <button id='' type="submit" onclick="serviceReturnDifferentTypes('JSON')">Return JSON</button>
+        <button id='' type="submit" onclick="serviceReturnDifferentTypes('XML')">Return XML</button>
+        <button id='' type="submit" onclick="serviceReturnDifferentTypes('HTML')">Return HTML</button>
+        <hr />
+        <button id='' type="submit" onclick="serviceDownload('JSON')">Download JSON</button>
+        <button id='' type="submit" onclick="serviceDownload('XML')">Download XML</button>
+        <button id='' type="submit" onclick="serviceDownload('HTML')">Download HTML</button>
+        <hr />
+        <div id='preview'></div>
+    </div>
+
+    <script>
+        let host = window.location.href;
+        let blockInput = document.getElementById("blockInput");
+        let blockAnswers = document.getElementById("blockAnswers");
+        let uploadButton = document.getElementById("uploadButton");
+        let sendButton = document.getElementById("sendButton");
+        let showButton = document.getElementById("showStatistics");
+        let preview = document.getElementById("preview");
+        let variants = [];
+        let answers = [];
+        let selectedVariants = null;
+
+        uploadButton.disabled = false;
+        sendButton.disabled = true;
+
+        async function uploadAnswerOptions() {
+
+            let url = `${host}variants`;
+            let response = await fetch(url);
+            let data = await response.json(); // читаем ответ в формате JSON
+
+            variants = data;
+            uploadButton.disabled = true;
+
+            let inputList = variants.map((item) => {
+                blockInput.innerHTML += `
+                    <input type="radio" id=${item.id} name="contact" value=${item.title} onclick="checkType(this)">
+                    <label for=${item.id}>${item.title}</label>
+                `
+            });
+        };
+
+        async function sendAsnwers() {
+
+            blockAnswers.innerHTML = '';
+
+            let answer = { id: selectedVariants }
+
+            let url = `${host}vote`;
+            let response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(answer)
+            });
+
+            let result = await response.json();
+            answers = result;
+
+            let optionList = answers.map((item) => {
+                blockAnswers.innerHTML += `
+                    <p>Option: ${item.id}, amount: ${item.count}</p>
+                `
+            });
+        };
+
+        async function showStatistics() {
+
+            blockAnswers.innerHTML = '';
+
+            let url = `${host}stat`;
+            let response = await fetch(url);
+            let data = await response.json(); // читаем ответ в формате JSON
+            answers = data;
+
+            let optionList = answers.map((item) => {
+                blockAnswers.innerHTML += `
+                    <p>Option: ${item.id}, amount: ${item.count}</p>
+                `
+            });
+        };
+
+        function checkType(node) {
+
+            selectedVariants = node.value;
+            sendButton.disabled = false;
+        };
+
+        async function serviceReturnDifferentTypes(type) {
+
+            let contentType = checkTypeContentType(type);
+            
+            const url = `${host}serviceReturnDifferentTypes`;
+            let response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    // 'Content-Type': contentType,
+                    Accept: df
+                    //'Content-Type': 'application/json', // данные запроса передаём в формате JSON
+                    //'Accept': 'text/plain', // в ответ будем ожидать просто id созданной группы
+                },
+            });
+            let result;
+
+            if(type === 'JSON'){
+                result = await response.json();
+                preview.innerHTML = JSON.stringify(result);
+            }else if(type === 'HTML'){
+                result = await response;
+                preview.innerHTML = result;
+            }
+        };
+
+        async function serviceDownload(type) {
+
+            let contentType = checkTypeContentType(type);
+
+            const url = `${host}download`;
+            let response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': contentType,
+                },
+            });
+            let result = await response;
+        };
+
+        function checkTypeContentType(type) {
+
+            let contentType;
+
+            switch (type) {
+                case 'JSON':
+                    contentType = 'application/json';
+                    break;
+
+                case 'XML':
+                    contentType = 'application/xml';
+                    break;
+
+                case 'HTML':
+                    contentType = 'text/html; charset=utf-8';
+                    break;
+
+                default:
+                    contentType = 'text/html; charset=utf-8';
+                    break;
+            };
+
+            return contentType;
+        };
+
+    </script>
+</body>
+
+</html>
