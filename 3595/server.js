@@ -12,11 +12,11 @@ const { logLineSync } = require('./utils/utils');
 
 const port = 3595;
 const logFN = path.join(__dirname, '_server.log'); //логирование
-
+const fileStat = path.resolve(__dirname, '/files/stat.json');
 
 webserver.get('/', (req, res) => {
 
-    logLineSync(logFN, `[${port}] ` + "visited the page '/'");
+    logLineSync(logFN, `[${port}] ` + `user visited Home page`);
 
     fs.readFile(path.join(__dirname, 'public', 'index.html'), 'utf-8', (err, content) => {
         if (err) throw err;
@@ -30,11 +30,13 @@ webserver.get('/variants', (req, res) => {
     fs.readFile(path.join(__dirname, 'files', 'variants.json'), 'utf8', (err, data) => {
         if (err) throw err;
 
+        res.setHeader('Cache-Controls', 'no-cache');
+        res.setHeader('Expires', '0');
         res.setHeader("Content-Type", "application/json");
         res.send(data);
     });
 
-    logLineSync(logFN, "user get variants on port " + port);
+    logLineSync(logFN, `[${port}] ` + `user get variants on port`);
 });
 
 webserver.get('/stat', (req, res) => {
@@ -42,11 +44,13 @@ webserver.get('/stat', (req, res) => {
     fs.readFile(path.join(__dirname, 'files', 'stat.json'), 'utf8', (err, data) => {
         if (err) throw err;
 
+        res.setHeader('Cache-Controls', 'no-cache');
+        res.setHeader('Expires', '0');
         res.setHeader("Content-Type", "application/json");
         res.send(data);
     });
 
-    logLineSync(logFN, "user get stat on port " + port);
+    logLineSync(logFN, `[${port}] ` + `user get stat`);
 });
 
 webserver.post('/vote', (req, res) => {
@@ -65,11 +69,11 @@ webserver.post('/vote', (req, res) => {
 
         let jsonContent = JSON.stringify(parsData);
 
-        fs.writeFile("./files/stat.json", jsonContent, 'utf8', (err) => {
+        fs.writeFile(fileStat, jsonContent, 'utf8', (err) => {
             if (err) throw err;
 
-            logLineSync(logFN, `JSON file: ${jsonContent} on port ` + port);
-            logLineSync(logFN, `JSON file stat.json has been saved on port ` + port);
+            logLineSync(logFN, `[${port}] ` + `Send vote: ${jsonContent}`);
+            logLineSync(logFN, `[${port}] ` + `JSON file stat.json has been saved`);
         });
 
         res.setHeader("Content-Type", "application/json");
