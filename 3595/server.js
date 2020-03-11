@@ -4,8 +4,9 @@ const path = require('path');
 // const os = require('os');
 
 const webserver = express();
+webserver.use(express.static('public'));
+webserver.use(express.json()); // мидлварь, умеющая обрабатывать тело запроса в формате JSON
 
-// webserver.use(express.json()); // мидлварь, умеющая обрабатывать тело запроса в формате JSON
 
 const { logLineSync } = require('./utils/utils');
 
@@ -20,7 +21,6 @@ webserver.get('/', (req, res) => {
     fs.readFile(path.join(__dirname, 'public', 'index.html'), 'utf-8', (err, content) => {
         if (err) throw err;
 
-        res.setHeader("Access-Control-Allow-Origin", "*");
         res.end(content);
     });
 });
@@ -77,43 +77,62 @@ webserver.post('/vote', (req, res) => {
     });
 });
 
-webserver.post('/download', (req, res) => {
+// webserver.post('/download', (req, res) => {
 
-    logLineSync(logFN, `[${port}] ` + "service download called");
+//     logLineSync(logFN, `[${port}] ` + "service download called");
 
-    const contentType = req.headers['content-type'];
-    logLineSync(logFN, `[${port}] ` + `contentType: ${contentType}`);
+//     const contentType = req.headers['content-type'];
+//     logLineSync(logFN, `[${port}] ` + `contentType: ${contentType}`);
 
-    // res.setHeader("Content-Disposition", "attachment");
-    // res.setHeader("Content-Type", "text/html");
-    res.send("hello <b>goodbye</b>");
-});
+//     // res.setHeader("Content-Disposition", "attachment");
+//     // res.setHeader("Content-Type", "text/html");
+//     res.send("hello <b>goodbye</b>");
+// });
 
 webserver.post('/serviceReturnDifferentTypes', (req, res) => {
 
     logLineSync(logFN, `[${port}] ` + "service ReturnDifferentTypes called");
 
-    const contentType = req.headers['content-type'];
-    logLineSync(logFN, `[${port}] ` + `contentType: ${contentType}`);
+    const accept = req.headers['accept'];
+    logLineSync(logFN, `[${port}] ` + `accept: ${accept}`);
 
 
     fs.readFile(path.join(__dirname, 'files', 'stat.json'), 'utf8', (err, data) => {
         if (err) throw err;
 
-        if (contentType === 'application/json') {
+        let parsData = JSON.parse(data);
+
+        if (accept === 'application/json') {
             res.setHeader("Content-Type", "application/json");
             res.send(data);
-        }else if(contentType === 'text/html; charset=utf-8'){
-            res.setHeader("Content-Type", "text/html; charset=utf-8");
-            res.send('<h1>fgfg</h1>')
-        }
-    });
+        } else if (accept === 'text/html') {
 
-    // else if(contentType === 'text/html; charset=utf-8'){
-    //     res.setHeader("Content-Type", "text/html; charset=utf-8");
-    // }
+            let dataHTML = '';
+
+            parsData.forEach((item) => dataHTML += `<p>id: ${item.id}, conut: ${item.count}</p>`);
+
+            res.setHeader("Content-Type", "text/html; charset=utf-8");
+            res.send(dataHTML);
+        } else if (accept === 'text/xml') {
+
+            let dataXML = '';
+
+            parsData.forEach((item) => dataXML += `<id> ${item.id}<id><count>${item.count}</count>`);
+
+            res.setHeader("Content-type", "text/xml");
+            res.send(dataXML);
+        };
+    });
 });
 
 webserver.listen(port, () => {
     logLineSync(logFN, `[${port}] ` + "web server running");
 });
+
+
+// res.setHeader('Cache-Controls', 'no-cache');
+// res.setHeader('Expires', '0');
+
+// res.setHeader("Content-Disposition",  'inline; filename="results.xml"');
+// res.setHeader('Cache-Controls', 'no-cache');
+// res.setHeader('Expires', '0');
