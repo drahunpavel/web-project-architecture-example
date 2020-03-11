@@ -25,10 +25,9 @@
         <button id='' type="submit" onclick="serviceReturnDifferentTypes('XML')">Return XML</button>
         <button id='' type="submit" onclick="serviceReturnDifferentTypes('HTML')">Return HTML</button>
         <hr />
-        <button id='' type="submit" onclick="serviceDownload('JSON')">Download JSON</button>
-        <button id='' type="submit" onclick="serviceDownload('XML')">Download XML</button>
-        <button id='' type="submit" onclick="serviceDownload('HTML')">Download HTML</button>
-        <form><input type="button">Download JSON</input></form>
+        <form><input type="submit" value='Download JSON' onclick="serviceDownload('JSON')"></input></form>
+        <form><input type="submit" value='Download XML' onclick="serviceDownload('XML')"></input></form>
+        <form><input type="submit" value='Download HTML' onclick="serviceDownload('HTML')"></input></form>
         <hr />
         <div id='preview'></div>
     </div>

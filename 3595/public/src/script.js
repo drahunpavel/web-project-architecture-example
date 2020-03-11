@@ -98,19 +98,12 @@ async function serviceReturnDifferentTypes(type) {
     };
 };
 
-// async function serviceDownload(type) {
+async function serviceDownload(type) {
 
-//     let contentType = checkTypeAcceptType(type);
-
-//     const url = `${host}download`;
-//     let response = await fetch(url, {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': contentType,
-//         },
-//     });
-//     let result = await response;
-// };
+    let url = `${host}download`;
+    let response = await fetch(url);
+    let data = await response.json();
+};
 
 function checkTypeAcceptType(type) {
 

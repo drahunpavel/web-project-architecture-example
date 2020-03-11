@@ -81,17 +81,15 @@ webserver.post('/vote', (req, res) => {
     });
 });
 
-// webserver.post('/download', (req, res) => {
+webserver.post('/download', (req, res) => {
 
-//     logLineSync(logFN, `[${port}] ` + "service download called");
+    logLineSync(logFN, `[${port}] ` + "service download called");
+    console.log('--res', res.body)
 
-//     const contentType = req.headers['content-type'];
-//     logLineSync(logFN, `[${port}] ` + `contentType: ${contentType}`);
-
-//     // res.setHeader("Content-Disposition", "attachment");
-//     // res.setHeader("Content-Type", "text/html");
-//     res.send("hello <b>goodbye</b>");
-// });
+    // res.setHeader("Content-Disposition", "attachment");
+    // res.setHeader("Content-Type", "text/html");
+    res.send("hello <b>goodbye</b>");
+});
 
 webserver.post('/serviceReturnDifferentTypes', (req, res) => {
 
