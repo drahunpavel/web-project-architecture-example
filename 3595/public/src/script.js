@@ -100,7 +100,7 @@ async function serviceReturnDifferentTypes(type) {
 
 async function serviceDownload(type) {
 
-    let url = `${host}download`;
+    let url = `${host}serviceDownload`;
     let response = await fetch(url);
     let data = await response.json();
 };

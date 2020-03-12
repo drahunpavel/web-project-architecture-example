@@ -81,14 +81,14 @@ webserver.post('/vote', (req, res) => {
     });
 });
 
-webserver.post('/download', (req, res) => {
+webserver.get('/serviceDownload', (req, res) => {
 
     logLineSync(logFN, `[${port}] ` + "service download called");
-    console.log('--res', res.body)
 
-    // res.setHeader("Content-Disposition", "attachment");
-    // res.setHeader("Content-Type", "text/html");
-    res.send("hello <b>goodbye</b>");
+    res.setHeader("Content-Type", "text/plain; charset=UTF-8");
+
+    var readStream = fs.createReadStream( path.join(__dirname, 'files', 'stat.json') );
+    readStream.pipe(res);
 });
 
 webserver.post('/serviceReturnDifferentTypes', (req, res) => {
