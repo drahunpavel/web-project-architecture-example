@@ -98,12 +98,12 @@ async function serviceReturnDifferentTypes(type) {
     };
 };
 
-async function serviceDownload(type) {
+// async function serviceDownload(type) {
 
-    let url = `${host}serviceDownload`;
-    let response = await fetch(url);
-    let data = await response.json();
-};
+//     let url = `${host}serviceDownload`;
+//     let response = await fetch(url);
+//     let data = await response.json();
+// };
 
 function checkTypeAcceptType(type) {
 
