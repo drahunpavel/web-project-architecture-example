@@ -81,15 +81,15 @@ webserver.post('/vote', (req, res) => {
     });
 });
 
-webserver.get('/serviceDownload', (req, res) => {
+// webserver.get('/serviceDownload', (req, res) => {
 
-    logLineSync(logFN, `[${port}] ` + "service download called");
+//     logLineSync(logFN, `[${port}] ` + "service download called");
 
-    res.setHeader("Content-Type", "text/plain; charset=UTF-8");
+//     res.setHeader("Content-Type", "text/plain; charset=UTF-8");
 
-    var readStream = fs.createReadStream( path.join(__dirname, 'files', 'stat.json') );
-    readStream.pipe(res);
-});
+//     var readStream = fs.createReadStream( path.join(__dirname, 'files', 'stat.json') );
+//     readStream.pipe(res);
+// });
 
 webserver.post('/serviceReturnDifferentTypes', (req, res) => {
 
