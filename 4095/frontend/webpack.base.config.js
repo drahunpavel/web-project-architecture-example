@@ -3,7 +3,7 @@ const webpack = require('webpack');
 import Config from 'webpack-config';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CaseSesitiveWebpackPlugin from 'case-sensitive-paths-webpack-plugin';
-import { ContextReplacementPlugin } from 'webpack';
+
 
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 

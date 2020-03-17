@@ -6,7 +6,7 @@ import CleanWebpackPlugin from 'clean-webpack-plugin';
 
 export default new Config().extend('webpack.base.config.js').merge({
   output: {
-    filename: `[name].bundle.min.js?v=[hash]`,
+    filename: `bundle.min.js`,
   },
   devtool: false,
   optimization: {
@@ -25,7 +25,7 @@ export default new Config().extend('webpack.base.config.js').merge({
         NODE_ENV: JSON.stringify('production'),
       },
     }),
-    new CleanWebpackPlugin(['public'], []),
+    new CleanWebpackPlugin(),
     new CopyWebpackPlugin([
       {
         from: 'images',
