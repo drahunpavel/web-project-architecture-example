@@ -1,7 +1,7 @@
 ﻿import webpack from 'webpack';
 import Config from 'webpack-config';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
-import CleanWebpackPlugin from 'clean-webpack-plugin';
+import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 
 
 export default new Config().extend('webpack.base.config.js').merge({
