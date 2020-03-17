@@ -1,5 +1,4 @@
 import React from "react";
-// import { Router, Route, IndexRoute, browserHistory } from 'react-router'
 import { BrowserRouter, Route } from 'react-router-dom';
 
 import Home from "../views/Home";
