@@ -1,0 +1,48 @@
+@mixin bp($point) {
+  @if $point == full {
+    @media (min-width: 960px) { @content; }
+  }
+  @else if $point == medium {
+    @media (min-width: 768px)  { @content; }
+  }
+  @else if $point == small {
+    @media (min-width: 500px)  { @content; }
+  }
+}
+
+html,
+body {
+  box-sizing: border-box;
+}
+
+.MainComponent{
+    display: flex;
+    flex-direction: column;
+    font-family: 'Hind', sans-serif;
+    color: #444;
+    background: #1d1f20;
+    @include bp (small) {
+        flex-direction: row;
+    }
+
+    .sidebar {
+        background:#eaeaeb;
+        order: 0;
+        flex: 0 1 100%;
+
+        @include bp (small) {
+            flex: 0 1 600px;  
+            flex-direction:row;
+        }
+    }
+  
+    .content {
+        background: #ffffff;
+        order: 1;
+        flex: 0 1 100%;
+        min-height: 100vh;
+        padding:20px;
+        flex-direction: column;
+    }
+}
+

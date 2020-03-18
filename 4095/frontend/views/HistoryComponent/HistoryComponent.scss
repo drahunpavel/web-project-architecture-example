@@ -1,0 +1,31 @@
+.HistoryComponent{
+    margin: 20px 0px 10px 0px;
+
+
+    h3, button{
+        margin-left: 10px;
+    }
+
+    h6{
+        cursor: pointer;
+    }
+
+    .list-wrapper{
+        margin-top: 20px;
+        overflow: auto; 
+        max-height: 500px; /* Высота блока */
+
+        span{
+            margin-right: 5px !important;
+            margin-left: 5px !important;
+        }
+
+        h6{
+            height: 30px !important;
+        }
+
+        h6:hover{
+            background: #b8b6b6;
+        }
+    }
+}

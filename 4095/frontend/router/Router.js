@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Route } from 'react-router-dom';
 
-import Home from "../views/Home";
+import MainComponent from "../views/MainComponent/MainComponent";
 
 
 const AppRouter = () => {
@@ -16,7 +16,7 @@ const AppRouter = () => {
         //     <Route path='*' component={Home} />
         //   </Router>
         <BrowserRouter>
-            <Route path="/" component={Home} />
+            <Route path="/" component={MainComponent} />
         </BrowserRouter>
     );
 };

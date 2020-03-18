@@ -1,0 +1,102 @@
+.DataInputComponent{
+    display: flex;
+    flex-direction: column;
+
+    .request-url-wrapper{
+        width: 100%;
+        min-height: 100px;
+        display: flex;
+        flex-direction: row;
+        border-bottom: 1px solid #cccccc;
+
+        .request-url-container{
+            display: flex;
+            flex-direction: column;
+            width: 60%;
+            
+            .request-url{
+                .form-control{
+                    // width: 400px !important;
+                }
+            }
+        }
+
+        .request-modifiers{
+            display: flex;
+            flex-direction: column;
+            width: 40%;
+
+            .modifiers{
+                display: flex;
+                flex-direction: row;
+
+                .custom-select{
+                    width: 150px !important; 
+                    margin-right: 20px;
+                }
+
+                button{
+                    height: 40px;
+                    width: 120px;
+                }
+            }
+        }
+    }
+
+    .params-headers{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        margin: 10px 0 0 0;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #cccccc;
+
+        .input-field{
+            margin: 10px 0 10px 0;
+            display: flex;
+
+            .form-control{
+                width: 40% !important;
+                margin-right: 50px;
+            }
+        }
+    }
+
+    .params-field{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        margin: 10px 0 0 0;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #cccccc;
+
+        .button-field{
+            margin: 10px 0 10px 0;
+        }
+
+        .input-field{
+            margin: 10px 0 10px 0;
+            display: flex;
+
+            .form-control{
+                width: 40% !important;
+                margin-right: 50px;
+            }
+        }
+    }
+
+    .request-actions{
+        width: 100%;
+        // min-height: 100px;
+        display: flex;
+        flex-direction: row;
+        border-bottom: 1px solid #cccccc;
+        margin: 10px 0 10px 0;
+
+        button{
+            margin: 0px 10px 10px 0;
+            height: 40px;
+            width: 80px;
+        }
+    }
+}
