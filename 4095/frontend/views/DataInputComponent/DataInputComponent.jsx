@@ -14,6 +14,7 @@ class DataInputComponent extends PureComponent {
         },
 
         stateHeaderRequest: false,
+        activeButtonParams: {fd: 'active', xwfu: '', r: ''}
         // headerRequestParams: [],
     };
 
@@ -59,16 +60,28 @@ class DataInputComponent extends PureComponent {
         });
     };
 
+    handleCheckButtonParams = (EO) => {
+
+        if(EO.target.dataset.button === 'xwfu'){
+            this.setState({activeButtonParams: {fd: '', xwfu: 'active', r: ''}});
+        }else if(EO.target.dataset.button === 'fd'){
+            this.setState({activeButtonParams: {fd: 'active', xwfu: '', r: ''}});
+        }else if(EO.target.dataset.button === 'r'){
+            this.setState({activeButtonParams: {fd: '', xwfu: '', r: 'active'}});
+        };
+    };
+
     render() {
         const {
             stateHeaderRequest,
-            params
+            params,
+            activeButtonParams
         } = this.state;
         const {
             requestHeaderParams
         } = params;
 
-
+        console.log('--activeButtonParams', activeButtonParams)
         return (
             <div className='DataInputComponent'>
                 <div className='request-url-wrapper'>
@@ -105,14 +118,17 @@ class DataInputComponent extends PureComponent {
                 </div>}
                 <div className='params-field'>
                     <div className='button-field'>
-                        <button type="button" className="btn btn-outline-secondary">form-data</button>
-                        <button type="button" className="btn btn-outline-secondary">x-www-form-urlencoded</button>
-                        <button type="button" className="btn btn-outline-secondary">raw</button>
+                        <button onClick={this.handleCheckButtonParams} type="button" data-button='fd' className={"btn btn-outline-secondary " + activeButtonParams.fd}>form-data</button>
+                        <button onClick={this.handleCheckButtonParams} type="button" data-button='xwfu' className={"btn btn-outline-secondary " + activeButtonParams.xwfu}>x-www-form-urlencoded</button>
+                        <button onClick={this.handleCheckButtonParams} type="button" data-button='r' className={"btn btn-outline-secondary " + activeButtonParams.r}>raw</button>
                     </div>
                     <div className='input-field'>
                         <input className="form-control" placeholder='Key' type="text"></input>
                         <input className="form-control" placeholder='Value' type="text"></input>
                         <button type="button" className="btn btn-outline-secondary">X</button>
+                    </div>
+                    <div className='input-field'>
+                        <textarea class="form-control" rows="3"></textarea>
                     </div>
                 </div>
                 <div className='request-actions'>
