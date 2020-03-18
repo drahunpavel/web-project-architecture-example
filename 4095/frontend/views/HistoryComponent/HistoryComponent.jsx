@@ -11,7 +11,7 @@ class HistoryComponent extends PureComponent {
                         <h3>Custom Postman</h3>
                         <button className="btn btn-primary" type="submit">History</button>
                         <div className='list-wrapper'>
-                            <h6><span class="badge badge-warning">POST</span>http://localhost:3000/api/updateProfile<span class="badge badge-secondary">X</span></h6>
+                            <span class="badge badge-warning">POST</span>http://localhost:3000/api/updateProfile<span class="badge badge-secondary">X</span>
                             <h6><span class="badge badge-warning">POST</span>http://localhost:3000/api/updateProfile<span class="badge badge-secondary">X</span></h6>
                             <h6><span class="badge badge-warning">POST</span>http://localhost:3000/api/updateProfile<span class="badge badge-secondary">X</span></h6>
                             <h6><span class="badge badge-warning">POST</span>http://localhost:3000/api/updateProfile<span class="badge badge-secondary">X</span></h6>

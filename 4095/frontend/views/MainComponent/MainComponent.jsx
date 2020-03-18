@@ -7,6 +7,11 @@ import PreviewComponent from '../PreviewComponent/PreviewComponent';
 import('./MainComponent.scss');
 
 export default class MainComponent extends PureComponent {
+
+  state = {
+    
+  };
+
   render() {
     return (
       <div className='MainComponent'>
