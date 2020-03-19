@@ -134,6 +134,17 @@ class DataInputComponent extends PureComponent {
         };
     };
 
+    handleChange = (event) => {
+
+        const selectedValue = event.target.value;
+        this.setState({
+            params: {
+                ...this.state.params,
+                requestType: selectedValue
+            }
+        });
+    };
+
     render() {
         const {
             stateHeaderRequest,
@@ -143,10 +154,10 @@ class DataInputComponent extends PureComponent {
         const {
             requestHeaderParams,
             formDataParams,
-            urlencodedParams
+            urlencodedParams,
+            requestType
         } = params;
-
-
+        
         return (
             <div className='DataInputComponent'>
                 <div className='request-url-wrapper'>
@@ -164,8 +175,8 @@ class DataInputComponent extends PureComponent {
                     <div className='request-modifiers'>
                         <p>Selected params</p>
                         <div className='modifiers'>
-                            <select className="custom-select">
-                                <option selected value="GET">GET</option>
+                            <select onChange={this.handleChange} className="custom-select">
+                                <option value="GET">GET</option>
                                 <option value="POST">POST</option>
                             </select>
                             <button onClick={this.showHeaderRequest} type="button" className="btn btn-outline-secondary">URL params</button>
@@ -181,7 +192,7 @@ class DataInputComponent extends PureComponent {
                         </div>
                     )}
                 </div>}
-                <div className='params-field'>
+                {requestType === 'POST' && <div className='params-field'>
                     <div className='button-field'>
                         <button onClick={this.handleCheckButtonParams} type="button" data-button='fd' className={"btn btn-outline-secondary " + activeButtonParams.fd}>form-data</button>
                         <button onClick={this.handleCheckButtonParams} type="button" data-button='xwfu' className={"btn btn-outline-secondary " + activeButtonParams.xwfu}>x-www-form-urlencoded</button>
@@ -204,7 +215,7 @@ class DataInputComponent extends PureComponent {
                     {activeButtonParams.r === 'active' && <div className='input-field'>
                         <textarea class="form-control" rows="3"></textarea>
                     </div>}
-                </div>
+                </div>}
                 <div className='request-actions'>
                     <button type="button" className="btn btn-outline-primary">Send</button>
                     <button type="button" className="btn btn-outline-secondary">Preview</button>
