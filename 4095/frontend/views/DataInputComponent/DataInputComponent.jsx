@@ -157,7 +157,7 @@ class DataInputComponent extends PureComponent {
             urlencodedParams,
             requestType
         } = params;
-        
+
         return (
             <div className='DataInputComponent'>
                 <div className='request-url-wrapper'>
@@ -213,7 +213,7 @@ class DataInputComponent extends PureComponent {
                         </div>
                     )}
                     {activeButtonParams.r === 'active' && <div className='input-field'>
-                        <textarea class="form-control" rows="3"></textarea>
+                        <textarea className="form-control" rows="3"></textarea>
                     </div>}
                 </div>}
                 <div className='request-actions'>
