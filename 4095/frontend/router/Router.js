@@ -1,8 +1,10 @@
 import React from "react";
 import { BrowserRouter, Route } from 'react-router-dom';
+import { Provider } from "react-redux";
 
 import MainComponent from "../views/MainComponent/MainComponent";
 
+import store from "../store/configureStore";
 
 const AppRouter = () => {
     return (
@@ -15,9 +17,11 @@ const AppRouter = () => {
         //     {/* для всех остальных роутов: показывай NotFound */}
         //     <Route path='*' component={Home} />
         //   </Router>
-        <BrowserRouter>
-            <Route path="/" component={MainComponent} />
-        </BrowserRouter>
+        <Provider store={store}>
+            <BrowserRouter>
+                <Route path="/" component={MainComponent} />
+            </BrowserRouter>
+        </Provider>
     );
 };
 
