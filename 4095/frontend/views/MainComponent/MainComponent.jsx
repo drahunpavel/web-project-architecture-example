@@ -14,34 +14,42 @@ import('./MainComponent.scss');
 export default class MainComponent extends PureComponent {
 
   state = {
-    
+
   };
 
   sendRequest = (value) => {
     console.log('-получили', value)
 
-    API.getTestRequest().then((resolve, reject) => {
-            
-      if(resolve){
-          console.log('Успех', resolve.data);
-          showNotification('success', '', 'тест')
-      }else{
-          console.log('Жопэ', reject)
-          showNotification('error', 'test body', 'test title')
+    const params = {
+      url: 'https://www.bps-sberbank.by/Portal/public/deposit/catalog',
+      mothod: 'GET',
+      headers: {
+        Accept: 'application/json'
       }
-  });
+    };
+
+    API.processRequest(params).then((resolve, reject) => {
+
+      if (resolve) {
+        console.log('Успех', resolve.data);
+        showNotification('success', '', 'тест')
+      } else {
+        console.log('Жопэ', reject)
+        showNotification('error', 'test body', 'test title')
+      }
+    });
   };
 
   render() {
     return (
       <div className='MainComponent'>
-        <Notification/>
-        <HistoryComponent/>
+        <Notification />
+        <HistoryComponent />
         <div className="content">
           <DataInputComponent
             cbSendRequest={this.sendRequest}
           />
-          <PreviewComponent/>
+          <PreviewComponent />
         </div>
       </div>
     );

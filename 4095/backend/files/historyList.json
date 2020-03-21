@@ -1,0 +1,16 @@
+[
+    {
+        "url": "http://nodearch.e-learning.by:3050/service2",
+        "requestType": "GET",
+        "requestURLParams": "[{key: par1, value: service}, {key: par2, value: 777}]"
+    },
+    {
+        "url": "http://nodearch.e-learning.by:3050/service2",
+        "requestType": "GET",
+        "requestURLParams": "[{key: par3, value: service1243}, {key: par4, value: 7dfdfdfd77}]"
+    },
+    {
+        "url": "https://www.bps-sberbank.by/Portal/public/deposit/group/list",
+        "requestType": "GET"
+    }
+]

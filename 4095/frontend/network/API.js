@@ -1,7 +1,7 @@
 import axios from '../core/axios';
 
 export const API = {
-    getTestRequest: async () => axios.get('/api/state'), //получение вссех тестов
+    // getTestRequest: async () => axios.get('/api/state'), //получение вссех тестов
     // getAllQestions: async () => axios.get('/api/list/Answer'),
     // getConcreteQestion: async (id) => axios.get(`/api/list/Condition/${id}`), //получение конкретного теста
 
@@ -17,4 +17,6 @@ export const API = {
     //         Authorization: 'Bearer'
     //     }
     // }),
+    processRequest: async (data) => axios.post('/api/processRequest', data), 
+    getHistoryList: async () => axios.get('/api/getHistoryList'),
 };
