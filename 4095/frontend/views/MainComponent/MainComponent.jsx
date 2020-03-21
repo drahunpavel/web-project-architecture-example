@@ -4,6 +4,9 @@ import DataInputComponent from '../DataInputComponent/DataInputComponent';
 import HistoryComponent from '../HistoryComponent/HistoryComponent';
 import PreviewComponent from '../PreviewComponent/PreviewComponent';
 
+import { API } from '../../network/API';
+
+
 import('./MainComponent.scss');
 
 export default class MainComponent extends PureComponent {
@@ -14,6 +17,15 @@ export default class MainComponent extends PureComponent {
 
   sendRequest = (value) => {
     console.log('-получили', value)
+
+    API.getTestRequest().then((resolve, reject) => {
+            
+      if(resolve){
+          console.log('Успех', resolve.data);
+      }else{
+          console.log('Жопэ', reject)
+      }
+  });
   };
 
   render() {

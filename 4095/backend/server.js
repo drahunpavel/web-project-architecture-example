@@ -27,6 +27,7 @@ webserver.use((req, res, next) => {
 
 webserver.use('/', home);
 webserver.use('/api', API);
+// logLineSync(logFN,`[${port}] `+"service1 called");
 
 webserver.listen(port, () => {
     logLineSync(logFN, `[${port}] ` + "web server is running");

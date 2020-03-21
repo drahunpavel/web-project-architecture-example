@@ -1,10 +1,6 @@
-// router.get('/api/state', async (req, res) => {
-//     // let response = await fn.getSettings();
-//     res.send('hello');
-// });
-
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const router = express.Router();
 
 const port = 4096;
@@ -20,10 +16,18 @@ router.get('/', (req, res) => {
 
 router.get('/state', (req, res, next) => {
     
-    res.status(200);
-    res.send('<p>/api/state</p>')
+    logLineAsync(logFN, `[${port}] ` + `service /api/state called`);
 
-    logLineAsync(logFN, `[${port}] ` + `visited /api/state`);
+    fs.readFile(path.join(__dirname, '../files', 'variants.json'), 'utf8', (err, data) => {
+        if (err) throw err;
+ 
+        logLineAsync(logFN, `[${port}] ` + `variants.json read`);
+
+        let parsData = JSON.parse(data);
+
+        res.setHeader("Content-Type", "application/json");
+        res.send(parsData);
+      });
 });
 
 module.exports = router;
