@@ -47,8 +47,7 @@ class DataInputComponent extends PureComponent {
             requestURLParams, 
             requestHeadersParams,
             formDataParams, 
-            urlencodedParams, 
-            requestHeadersParams 
+            urlencodedParams
         } = this.state.params;
 
         
