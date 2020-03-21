@@ -229,6 +229,20 @@ class DataInputComponent extends PureComponent {
         cbSendRequest('test');
     };
 
+    onClickResetParams = () => {
+
+        this.setState({
+            params: {
+                url: '',
+                requestURLParams: [{ key: '', value: '' }],
+                requestHeadersParams: [{ key: '', value: '' }],
+                formDataParams: [{ key: '', value: '' }],
+                urlencodedParams: [{ key: '', value: '' }],
+                rawParams: ''
+            },
+        })
+    };
+
     render() {
         const {
             stateUrlParams,
@@ -245,8 +259,10 @@ class DataInputComponent extends PureComponent {
             url,
             rawParams
         } = params;
-        
-        
+
+        let butUrl = stateUrlParams ? 'active' : '';
+        let butHed = stateHeadersParams ? 'active' : '';
+
         return (
             <div className='DataInputComponent'>
                 <div className='request-url-wrapper'>
@@ -268,8 +284,8 @@ class DataInputComponent extends PureComponent {
                                 <option value="GET">GET</option>
                                 <option value="POST">POST</option>
                             </select>
-                            <button onClick={this.showUrlParams} type="button" className="btn btn-outline-secondary">URL params</button>
-                            <button onClick={this.showHeadersParams} type="button" className="btn btn-outline-secondary">Headers</button>
+                            <button onClick={this.showUrlParams} type="button" data-button='butUrl' className={"btn btn-outline-secondary " + butUrl}>URL params</button>
+                            <button onClick={this.showHeadersParams} type="button" data-button='butHed' className={"btn btn-outline-secondary " + butHed}>Headers</button>
                         </div>
                     </div>
                 </div>
@@ -317,8 +333,8 @@ class DataInputComponent extends PureComponent {
                 </div>}
                 <div className='request-actions'>
                     <button onClick={this.sendParams} type="button" className="btn btn-outline-primary">Send</button>
-                    <button type="button" className="btn btn-outline-secondary">Preview</button>
-                    <button type="button" className="btn btn-outline-danger">Reset</button>
+                    <button type="button" className="btn btn-outline-success">Preview</button>
+                    <button onClick={this.onClickResetParams} type="button" className="btn btn-outline-danger">Reset</button>
                 </div>
             </div>
         );
