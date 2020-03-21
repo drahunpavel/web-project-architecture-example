@@ -10,8 +10,9 @@ class DataInputComponent extends PureComponent {
             url: '',
             requestType: 'GET',
             requestHeaderParams: [{ key: '', value: '' }],
-            formDataParams: [{ key: '', value: '' }],
+            formDataParams: [{ key: '1', value: '1' }, { key: '2', value: '2' }, { key: '3', value: '3' }],
             urlencodedParams: [{ key: '', value: '' }],
+            rawParams: {}
         },
 
         stateHeaderRequest: false,
@@ -98,7 +99,7 @@ class DataInputComponent extends PureComponent {
             case 'paramsFormData':
 
                 let newFormDataParams = remove(formDataParams, (item, index) => { return index != +EO.target.dataset.id })
-
+                console.log('--newFormDataParams', newFormDataParams)
                 this.setState({
                     params: {
                         ...this.state.params,
@@ -145,6 +146,61 @@ class DataInputComponent extends PureComponent {
         });
     };
 
+    onChange = (EO) => {
+        const { 
+            requestHeaderParams,
+            formDataParams
+        } = this.state.params;
+
+        let fieldName = EO.target.dataset.field;
+        let fieldID = EO.target.dataset.id;
+
+        switch(fieldName){
+            case '_url': 
+                this.setState({params: {...this.state.params, url: EO.target.value}});
+            break;
+            case '_row': 
+                this.setState({params: {...this.state.params, rawParams: EO.target.value}});
+            break;
+            case '_formDataKey':
+                if(fieldName === '_formDataKey') formDataParams[fieldID]['key'] = EO.target.value;
+                this.setState({params: {...this.state.params, ...formDataParams}});
+            break;
+            case '_formDataValue':
+                if(fieldName === '_formDataValue') formDataParams[fieldID]['value'] = EO.target.value;
+                this.setState({params: {...this.state.params, ...formDataParams}});
+            break;
+
+            default: break;
+        };
+    }
+
+    //     // params: {
+    //     //     url: '',
+    //     //     requestType: 'GET',
+    //     //     requestHeaderParams: [{ key: '', value: '' }],
+    //     //     formDataParams: [{ key: '', value: '' }],
+    //     //     urlencodedParams: [{ key: '', value: '' }],
+    //     //     rawParams: {}
+    //     // },
+    // };
+    
+    // this.setState({
+    //     params: {
+    //         ...this.state.params,
+    //         url: EO.target.value
+    //     }
+    // });
+
+    sendParams = () => {
+        const { cbSendRequest } = this.props;
+        const { params } = this.state;
+
+        console.log('--параметры', params)
+        
+        cbSendRequest('test');
+    };
+
     render() {
         const {
             stateHeaderRequest,
@@ -155,9 +211,11 @@ class DataInputComponent extends PureComponent {
             requestHeaderParams,
             formDataParams,
             urlencodedParams,
-            requestType
+            requestType,
+            url
         } = params;
-
+        
+        
         return (
             <div className='DataInputComponent'>
                 <div className='request-url-wrapper'>
@@ -167,7 +225,7 @@ class DataInputComponent extends PureComponent {
                             <div className="input-group mb-3">
                                 <div className="input-group-prepend">
                                     <span className="input-group-text" id="basic-addon3">https://example.com/</span>
-                                    <input type="text" placeholder='Enter request URL here' className="form-control" id="basic-url" aria-describedby="basic-addon3"></input>
+                                    <input onChange={this.onChange} data-field='_url' type="text" placeholder='Enter request URL here' className="form-control" id="basic-url" aria-describedby="basic-addon3"></input>
                                 </div>
                             </div>
                         </div>
@@ -186,8 +244,8 @@ class DataInputComponent extends PureComponent {
                 {stateHeaderRequest && <div className='params-headers'>
                     {requestHeaderParams.map((item, index) =>
                         <div key={index} className='input-field'>
-                            <input onClick={this.handleCheckParams} data-name={'paramsHeaders'} data-id={index} className="form-control" placeholder='Key' type="text"></input>
-                            <input onClick={this.handleCheckParams} data-name={'paramsHeaders'} data-id={index} className="form-control" placeholder='Value' type="text"></input>
+                            <input onClick={this.handleCheckParams} onChange={this.onChange} data-field='_headerKey' data-filed='header' data-name={'paramsHeaders'} data-id={index} className="form-control" placeholder='Key' type="text"></input>
+                            <input onClick={this.handleCheckParams} onChange={this.onChange} data-field='_headerValue' data-name={'paramsHeaders'} data-id={index} className="form-control" placeholder='Value' type="text"></input>
                             {index != 0 && <button onClick={this.deleteParams} data-name={'paramsHeaders'} data-id={index} type="button" className="btn btn-outline-secondary">X</button>}
                         </div>
                     )}
@@ -200,24 +258,24 @@ class DataInputComponent extends PureComponent {
                     </div>
                     {activeButtonParams.fd === 'active' && formDataParams.map((item, index) =>
                         <div key={index} className='input-field'>
-                            <input onClick={this.handleCheckParams} className="form-control" data-name={'paramsFormData'} data-id={index} placeholder='Key' type="text"></input>
-                            <input onClick={this.handleCheckParams} className="form-control" data-name={'paramsFormData'} data-id={index} placeholder='Value' type="text"></input>
+                            <input onClick={this.handleCheckParams} value={item.key} onChange={this.onChange} data-field='_formDataKey' className="form-control" data-name={'paramsFormData'} data-id={index} placeholder='Key' type="text"></input>
+                            <input onClick={this.handleCheckParams} value={item.value} onChange={this.onChange} data-field='_formDataValue' className="form-control" data-name={'paramsFormData'} data-id={index} placeholder='Value' type="text"></input>
                             {index != 0 && <button onClick={this.deleteParams} data-name={'paramsFormData'} data-id={index} type="button" className="btn btn-outline-secondary">X</button>}
                         </div>
                     )}
                     {activeButtonParams.xwfu === 'active' && urlencodedParams.map((item, index) =>
                         <div key={index} className='input-field'>
-                            <input onClick={this.handleCheckParams} className="form-control" data-name={'paramsUrlencoded'} data-id={index} placeholder='Key' type="text"></input>
-                            <input onClick={this.handleCheckParams} className="form-control" data-name={'paramsUrlencoded'} data-id={index} placeholder='Value' type="text"></input>
+                            <input onClick={this.handleCheckParams} onChange={this.onChange} data-field='_urlencodedKey' className="form-control" data-name={'paramsUrlencoded'} data-id={index} placeholder='Key' type="text"></input>
+                            <input onClick={this.handleCheckParams} onChange={this.onChange} data-field='_urlencodedValue' className="form-control" data-name={'paramsUrlencoded'} data-id={index} placeholder='Value' type="text"></input>
                             {index != 0 && <button onClick={this.deleteParams} data-name={'paramsUrlencoded'} data-id={index} type="button" className="btn btn-outline-secondary">X</button>}
                         </div>
                     )}
                     {activeButtonParams.r === 'active' && <div className='input-field'>
-                        <textarea className="form-control" rows="3"></textarea>
+                        <textarea className="form-control" onChange={this.onChange} data-field='_row' rows="3"></textarea>
                     </div>}
                 </div>}
                 <div className='request-actions'>
-                    <button type="button" className="btn btn-outline-primary">Send</button>
+                    <button onClick={this.sendParams} type="button" className="btn btn-outline-primary">Send</button>
                     <button type="button" className="btn btn-outline-secondary">Preview</button>
                     <button type="button" className="btn btn-outline-danger">Reset</button>
                 </div>

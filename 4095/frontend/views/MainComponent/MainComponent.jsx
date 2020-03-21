@@ -12,12 +12,18 @@ export default class MainComponent extends PureComponent {
     
   };
 
+  sendRequest = (value) => {
+    console.log('-получили', value)
+  };
+
   render() {
     return (
       <div className='MainComponent'>
         <HistoryComponent/>
         <div className="content">
-          <DataInputComponent/>
+          <DataInputComponent
+            cbSendRequest={this.sendRequest}
+          />
           <PreviewComponent/>
         </div>
       </div>
