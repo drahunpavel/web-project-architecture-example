@@ -3,6 +3,7 @@ import { remove } from 'lodash';
 
 import('./DataInputComponent.scss');
 
+
 class DataInputComponent extends PureComponent {
 
     state = {
@@ -227,6 +228,7 @@ class DataInputComponent extends PureComponent {
         console.log('--параметры', params)
         
         cbSendRequest('test');
+
     };
 
     onClickResetParams = () => {
