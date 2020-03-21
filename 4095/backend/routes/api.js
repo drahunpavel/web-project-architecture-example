@@ -41,8 +41,14 @@ router.post('/processRequest', async (req, res, next) => {
     logLineAsync(logFN, `[${port}] ` + `proxied`);
 
     // const proxy_response=await fetch(`http://nodearch.e-learning.by:3050/service2?par1=${req.params.aaa}&par2=777`);
-    const proxy_response = await fetch(`http://nodearch.e-learning.by:3050/service2?par1=service&par2=777`);
+    // const proxy_response = await fetch(`http://nodearch.e-learning.by:3050/service2?par1=service&par2=777`);
     // const proxy_response = await fetch('https://www.bps-sberbank.by/Portal/public/deposit/group/list')
+    const params = {
+        // url: body.url,
+        method: body.requestType,
+      };
+
+    const proxy_response = await fetch(`${body.url}`, params);
     const proxy_text = await proxy_response.text();
 
     console.log('--body', body)
@@ -62,7 +68,7 @@ router.get('/getHistoryList', async (req, res, next) => {
 
         res.setHeader("Content-Type", "application/json");
         res.send(parsData);
-        
+
         logLineAsync(logFN, `[${port}] ` + `historyList send`);
       });
 });

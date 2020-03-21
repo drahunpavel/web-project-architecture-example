@@ -14,43 +14,45 @@ import('./MainComponent.scss');
 export default class MainComponent extends PureComponent {
 
   state = {
-    selectedObj: {}
+    selectedObj: {},
+    answer: {}
   };
 
   sendRequest = (value) => {
     console.log('-получили', value)
 
     const params = {
-      url: 'https://www.bps-sberbank.by/Portal/public/deposit/catalog',
-      mothod: 'GET',
-      headers: {
-        Accept: 'application/json'
-      }
+      // url: 'https://www.bps-sberbank.by/Portal/public/deposit/catalog',
+      // mothod: 'GET',
+      // headers: {
+      //   Accept: 'application/json'
+      // }
+      url: value.url,
+      method: value.requestType,
     };
 
     API.processRequest(params).then((resolve, reject) => {
-
       if (resolve) {
         console.log('Успех', resolve.data);
-        showNotification('success', '', 'тест')
+        this.setState({answer: resolve})
+        showNotification('success', '', 'service processRequest');
       } else {
-        console.log('Жопэ', reject)
-        showNotification('error', 'test body', 'test title')
+        showNotification('error', '', 'service processRequest')
       }
     });
   };
 
   singleClick = (selectedObj) => {
-    this.setState({selectedObj})
+    this.setState({ selectedObj })
   };
 
   render() {
-    const { selectedObj } = this.state;
+    const { selectedObj, answer } = this.state;
 
     return (
       <div className='MainComponent'>
         <Notification />
-        <HistoryComponent 
+        <HistoryComponent
           cbSingleClick={this.singleClick}
         />
         <div className="content">
@@ -58,7 +60,9 @@ export default class MainComponent extends PureComponent {
             cbSendRequest={this.sendRequest}
             selectedObj={selectedObj}
           />
-          <PreviewComponent />
+          <PreviewComponent 
+            answer={answer}
+          />
         </div>
       </div>
     );

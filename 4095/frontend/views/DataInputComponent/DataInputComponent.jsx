@@ -228,11 +228,15 @@ class DataInputComponent extends PureComponent {
     sendParams = () => {
         const { cbSendRequest } = this.props;
         const { params } = this.state;
+        let newParams = {};
 
-        console.log('--параметры', params)
-        
-        cbSendRequest('test');
+        if(params.requestType === 'GET'){
+            newParams.url = params.url;
+            newParams.requestType = params.requestType;
+            cbSendRequest(newParams);
+        }else{
 
+        };
     };
 
     onClickResetParams = () => {
@@ -268,7 +272,7 @@ class DataInputComponent extends PureComponent {
 
         let butUrl = stateUrlParams ? 'active' : '';
         let butHed = stateHeadersParams ? 'active' : '';
-
+        console.log('--', this.props.selectedObj)
         return (
             <div className='DataInputComponent'>
                 <div className='request-url-wrapper'>

@@ -18,9 +18,9 @@ class HistoryComponent extends PureComponent {
         API.getHistoryList().then((resolve, reject) => {
             if (resolve) {
                 this.setState({historyList: resolve.data})
-                showNotification('success', '', 'service getHistoryList')
+                showNotification('success', '', 'service getHistoryList');
             } else {
-                showNotification('error', '', 'service getHistoryList')
+                showNotification('error', '', 'service getHistoryList');
             }
         });
     };
