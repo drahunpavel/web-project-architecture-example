@@ -16,9 +16,9 @@ const { logLineSync } = require('./utils/utils');
 const port = 4096;
 const logFN = path.join(__dirname, '_server.log'); //логирование
 
-//cors для локальной отладки
+//cors
 webserver.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4095');
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
     res.setHeader('Access-Control-Allow-Credentials', true);
@@ -27,7 +27,6 @@ webserver.use((req, res, next) => {
 
 webserver.use('/', home);
 webserver.use('/api', API);
-// logLineSync(logFN,`[${port}] `+"service1 called");
 
 webserver.listen(port, () => {
     logLineSync(logFN, `[${port}] ` + "web server is running");
