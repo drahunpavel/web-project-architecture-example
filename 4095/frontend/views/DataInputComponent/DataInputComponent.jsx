@@ -116,55 +116,28 @@ class DataInputComponent extends PureComponent {
             urlencodedParams,
             requestHeadersParams
         } = this.state.params;
-// paramsHeaders
+
         switch (EO.target.dataset.name) {
+
             case 'paramsUrl':
-
                 let newrequestURLParams = remove(requestURLParams, (item, index) => { return index != +EO.target.dataset.id })
-
-                this.setState({
-                    params: {
-                        ...this.state.params,
-                        requestURLParams: newrequestURLParams
-                    }
-                });
-                break;
+                this.setState({ params: {...this.state.params, requestURLParams: newrequestURLParams }});
+            break;
 
             case 'paramsFormData':
-
                 let newFormDataParams = remove(formDataParams, (item, index) => { return index != +EO.target.dataset.id })
-                console.log('--newFormDataParams', newFormDataParams)
-                this.setState({
-                    params: {
-                        ...this.state.params,
-                        formDataParams: newFormDataParams
-                    }
-                });
-                break;
+                this.setState({ params: {...this.state.params, formDataParams: newFormDataParams }});
+            break;
 
             case 'paramsUrlencoded':
-
                 let newUrlencodedParams = remove(urlencodedParams, (item, index) => { return index != +EO.target.dataset.id })
-
-                this.setState({
-                    params: {
-                        ...this.state.params,
-                        urlencodedParams: newUrlencodedParams
-                    }
-                });
-                break;
+                this.setState({ params: {...this.state.params, urlencodedParams: newUrlencodedParams}});
+            break;
 
             case 'paramsHeaders':
-
                 let newRequestHeadersParams = remove(requestHeadersParams, (item, index) => { return index != +EO.target.dataset.id })
-
-                this.setState({
-                    params: {
-                        ...this.state.params,
-                        requestHeadersParams: newRequestHeadersParams
-                    }
-                });
-                break;
+                this.setState({ params: { ...this.state.params, requestHeadersParams: newRequestHeadersParams }});
+            break;
 
             default: break
         };
