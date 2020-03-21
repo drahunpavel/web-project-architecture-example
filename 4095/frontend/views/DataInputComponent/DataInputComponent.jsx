@@ -12,7 +12,7 @@ class DataInputComponent extends PureComponent {
             requestHeaderParams: [{ key: '', value: '' }],
             formDataParams: [{ key: '1', value: '1' }, { key: '2', value: '2' }, { key: '3', value: '3' }],
             urlencodedParams: [{ key: '', value: '' }],
-            rawParams: {}
+            rawParams: ''
         },
 
         stateHeaderRequest: false,
@@ -149,12 +149,14 @@ class DataInputComponent extends PureComponent {
     onChange = (EO) => {
         const { 
             requestHeaderParams,
-            formDataParams
+            formDataParams,
+            urlencodedParams,
+            rawParams
         } = this.state.params;
 
         let fieldName = EO.target.dataset.field;
         let fieldID = EO.target.dataset.id;
-
+        console.log('--fieldName', fieldName)
         switch(fieldName){
             case '_url': 
                 this.setState({params: {...this.state.params, url: EO.target.value}});
@@ -170,27 +172,26 @@ class DataInputComponent extends PureComponent {
                 if(fieldName === '_formDataValue') formDataParams[fieldID]['value'] = EO.target.value;
                 this.setState({params: {...this.state.params, ...formDataParams}});
             break;
+            case '_urlencodedKey':
+                if(fieldName === '_urlencodedKey') urlencodedParams[fieldID]['key'] = EO.target.value;
+                this.setState({params: {...this.state.params, ...urlencodedParams}});
+            break;
+            case '_urlencodedValue':
+                if(fieldName === '_urlencodedValue') urlencodedParams[fieldID]['value'] = EO.target.value;
+                this.setState({params: {...this.state.params, ...urlencodedParams}});
+            break;
+            case '_headerKey':
+                if(fieldName === '_headerKey') requestHeaderParams[fieldID]['key'] = EO.target.value;
+                this.setState({params: {...this.state.params, ...requestHeaderParams}});
+            break;
+            case '_headerValue':
+                if(fieldName === '_headerValue') requestHeaderParams[fieldID]['value'] = EO.target.value;
+                this.setState({params: {...this.state.params, ...requestHeaderParams}});
+            break;
 
             default: break;
         };
-    }
-
-    //     // params: {
-    //     //     url: '',
-    //     //     requestType: 'GET',
-    //     //     requestHeaderParams: [{ key: '', value: '' }],
-    //     //     formDataParams: [{ key: '', value: '' }],
-    //     //     urlencodedParams: [{ key: '', value: '' }],
-    //     //     rawParams: {}
-    //     // },
-    // };
-    
-    // this.setState({
-    //     params: {
-    //         ...this.state.params,
-    //         url: EO.target.value
-    //     }
-    // });
+    };
 
     sendParams = () => {
         const { cbSendRequest } = this.props;
@@ -212,7 +213,8 @@ class DataInputComponent extends PureComponent {
             formDataParams,
             urlencodedParams,
             requestType,
-            url
+            url,
+            rawParams
         } = params;
         
         
@@ -225,7 +227,7 @@ class DataInputComponent extends PureComponent {
                             <div className="input-group mb-3">
                                 <div className="input-group-prepend">
                                     <span className="input-group-text" id="basic-addon3">https://example.com/</span>
-                                    <input onChange={this.onChange} data-field='_url' type="text" placeholder='Enter request URL here' className="form-control" id="basic-url" aria-describedby="basic-addon3"></input>
+                                    <input onChange={this.onChange} value={url} data-field='_url' type="text" placeholder='Enter request URL here' className="form-control" id="basic-url" aria-describedby="basic-addon3"></input>
                                 </div>
                             </div>
                         </div>
@@ -244,8 +246,8 @@ class DataInputComponent extends PureComponent {
                 {stateHeaderRequest && <div className='params-headers'>
                     {requestHeaderParams.map((item, index) =>
                         <div key={index} className='input-field'>
-                            <input onClick={this.handleCheckParams} onChange={this.onChange} data-field='_headerKey' data-filed='header' data-name={'paramsHeaders'} data-id={index} className="form-control" placeholder='Key' type="text"></input>
-                            <input onClick={this.handleCheckParams} onChange={this.onChange} data-field='_headerValue' data-name={'paramsHeaders'} data-id={index} className="form-control" placeholder='Value' type="text"></input>
+                            <input onClick={this.handleCheckParams} value={item.key} onChange={this.onChange} data-field='_headerKey' data-filed='header' data-name={'paramsHeaders'} data-id={index} className="form-control" placeholder='Key' type="text"></input>
+                            <input onClick={this.handleCheckParams} value={item.value} onChange={this.onChange} data-field='_headerValue' data-name={'paramsHeaders'} data-id={index} className="form-control" placeholder='Value' type="text"></input>
                             {index != 0 && <button onClick={this.deleteParams} data-name={'paramsHeaders'} data-id={index} type="button" className="btn btn-outline-secondary">X</button>}
                         </div>
                     )}
@@ -265,13 +267,13 @@ class DataInputComponent extends PureComponent {
                     )}
                     {activeButtonParams.xwfu === 'active' && urlencodedParams.map((item, index) =>
                         <div key={index} className='input-field'>
-                            <input onClick={this.handleCheckParams} onChange={this.onChange} data-field='_urlencodedKey' className="form-control" data-name={'paramsUrlencoded'} data-id={index} placeholder='Key' type="text"></input>
-                            <input onClick={this.handleCheckParams} onChange={this.onChange} data-field='_urlencodedValue' className="form-control" data-name={'paramsUrlencoded'} data-id={index} placeholder='Value' type="text"></input>
+                            <input onClick={this.handleCheckParams} value={item.key} onChange={this.onChange} data-field='_urlencodedKey' className="form-control" data-name={'paramsUrlencoded'} data-id={index} placeholder='Key' type="text"></input>
+                            <input onClick={this.handleCheckParams} value={item.value} onChange={this.onChange} data-field='_urlencodedValue' className="form-control" data-name={'paramsUrlencoded'} data-id={index} placeholder='Value' type="text"></input>
                             {index != 0 && <button onClick={this.deleteParams} data-name={'paramsUrlencoded'} data-id={index} type="button" className="btn btn-outline-secondary">X</button>}
                         </div>
                     )}
                     {activeButtonParams.r === 'active' && <div className='input-field'>
-                        <textarea className="form-control" onChange={this.onChange} data-field='_row' rows="3"></textarea>
+                        <textarea className="form-control" onChange={this.onChange} value={rawParams} data-field='_row' rows="3"></textarea>
                     </div>}
                 </div>}
                 <div className='request-actions'>
