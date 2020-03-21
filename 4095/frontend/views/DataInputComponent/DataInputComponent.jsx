@@ -6,6 +6,10 @@ import('./DataInputComponent.scss');
 
 class DataInputComponent extends PureComponent {
 
+    static defaultProps = {
+        selectedObj: {}
+    };
+
     state = {
         params: {
             url: '',
@@ -176,7 +180,7 @@ class DataInputComponent extends PureComponent {
 
         let fieldName = EO.target.dataset.field;
         let fieldID = EO.target.dataset.id;
-        console.log('--fieldName', fieldName)
+
         switch(fieldName){
             case '_url': 
                 this.setState({params: {...this.state.params, url: EO.target.value}});

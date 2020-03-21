@@ -27,14 +27,12 @@ class HistoryComponent extends PureComponent {
 
     onHandleClick = (event) => {
         const { historyList } = this.state;
+        const { cbSingleClick } = this.props;
 
-        let selectedRequest = find(historyList, (item, index) => { 
-            console.log('--', index, event.target.dataset.id)
-            return index === +event.target.dataset.id 
-        });
-        console.log('--selectedRequest', selectedRequest)
+        let selectedRequest = find(historyList, (item, index) => { return index === +event.target.dataset.id });
 
-        console.log('--select', event.target.dataset.id)
+        cbSingleClick(selectedRequest);
+
         console.log('--delete', event.target.dataset.delete)
     };
 

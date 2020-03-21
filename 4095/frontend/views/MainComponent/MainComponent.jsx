@@ -14,7 +14,7 @@ import('./MainComponent.scss');
 export default class MainComponent extends PureComponent {
 
   state = {
-
+    selectedObj: {}
   };
 
   sendRequest = (value) => {
@@ -40,14 +40,23 @@ export default class MainComponent extends PureComponent {
     });
   };
 
+  singleClick = (selectedObj) => {
+    this.setState({selectedObj})
+  };
+
   render() {
+    const { selectedObj } = this.state;
+
     return (
       <div className='MainComponent'>
         <Notification />
-        <HistoryComponent />
+        <HistoryComponent 
+          cbSingleClick={this.singleClick}
+        />
         <div className="content">
           <DataInputComponent
             cbSendRequest={this.sendRequest}
+            selectedObj={selectedObj}
           />
           <PreviewComponent />
         </div>
