@@ -97,6 +97,7 @@ router.post('/addNewRequest', async (req, res, next) => {
         newParams.id = parsData.length;
         let obj = [...parsData, newParams];
         let jsonContent = JSON.stringify(obj);
+        logLineAsync(logFN, `[${port}] ` + `received obj: ${obj}`);
 
         fs.writeFile(fileHistory, jsonContent, 'utf8', (err) => {
             if (err) throw err;

@@ -75,6 +75,13 @@ const setActiveButtonParams = (value) => {
     };
 };
 
+const setHistoryList = (value) => {
+    return {
+        type: 'set_historyList',
+        payload: value
+    };
+};
+
 export {
     setUrl,
     setRequestType,
@@ -87,5 +94,7 @@ export {
 
     setStateUrlParams,
     setStateHeadersParams,
-    setActiveButtonParams
+    setActiveButtonParams,
+
+    setHistoryList
 };

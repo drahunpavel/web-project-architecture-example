@@ -13,15 +13,15 @@ import('./HistoryComponent.scss');
 class HistoryComponent extends PureComponent {
 
     state = {
-        selectedRequest: null,
-        historyList: []
+        selectedRequest: null
     };
 
     componentDidMount() {
+        const { setHistoryList } = this.props.acWindows;
 
         API.getHistoryList().then((resolve, reject) => {
             if (resolve) {
-                this.setState({historyList: resolve.data})
+                setHistoryList(resolve.data);
                 showNotification('success', '', 'service getHistoryList');
             } else {
                 showNotification('error', '', 'service getHistoryList');
@@ -30,7 +30,6 @@ class HistoryComponent extends PureComponent {
     };
 
     onHandleClick = (event) => {
-        const { historyList } = this.state;
         const { 
             setRequestURLParams,
             setRequestHeadersParams,
@@ -54,7 +53,8 @@ class HistoryComponent extends PureComponent {
             rawParams,
             stateUrlParams,
             stateHeadersParams,
-            activeButtonParams
+            activeButtonParams,
+            historyList
         } = this.props.windows;
 
         let selectedRequest = find(historyList, (item, index) => { return index === +event.target.dataset.id });
@@ -82,7 +82,7 @@ class HistoryComponent extends PureComponent {
     };
 
     render() {
-        const { historyList } = this.state;
+        const { historyList } = this.props.windows;
 
         return (
             <div className="sidebar">

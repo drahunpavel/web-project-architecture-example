@@ -24,19 +24,10 @@ class MainComponent extends PureComponent {
 
   sendRequest = (value) => {
     console.log('-получили', value)
-    const { 
-      setPreview
-  } = this.props.acWindows;
-
-    const params = {
-      // url: 'https://www.bps-sberbank.by/Portal/public/deposit/catalog',
-      // mothod: 'GET',
-      // headers: {
-      //   Accept: 'application/json'
-      // }
-      url: value.url,
-      method: value.requestType,
-    };
+    const {
+      setPreview,
+      setHistoryList
+    } = this.props.acWindows;
 
     API.processRequest(value).then((resolve, reject) => {
       if (resolve) {
@@ -49,17 +40,29 @@ class MainComponent extends PureComponent {
 
 
     const par = {
-      requestType: 'POST',
-      url: 'http://localhost:4096/api/addNewRequest'
+      requestType: value.requestType,
+      url: value.url,
+      requestURLParams: value.requestURLParams ? value.requestURLParams : [{ key: '', value: '' }],
+      requestHeadersParams: value.requestHeadersParams ? value.requestHeadersParams : [{ key: '', value: '' }]
     }
 
     API.addNewRequest(par).then((resolve, reject) => {
       if (resolve) {
         showNotification('success', '', 'service addNewRequest');
+
+        API.getHistoryList().then((resolve, reject) => {
+          if (resolve) {
+            setHistoryList(resolve.data);
+            showNotification('success', '', 'service getHistoryList');
+          } else {
+            showNotification('error', '', 'service getHistoryList');
+          }
+        });
+
       } else {
         showNotification('error', '', 'service addNewRequest')
       }
-    })
+    });
   };
 
 
@@ -68,19 +71,19 @@ class MainComponent extends PureComponent {
     return (
       <div className='MainComponent'>
         <Notification />
-        <HistoryComponent/>
+        <HistoryComponent />
         <div className="content">
           <DataInputComponent
             cbSendRequest={this.sendRequest}
           />
-          <PreviewComponent/>
+          <PreviewComponent />
         </div>
       </div>
     );
   };
 };
 
-const mapStateToProps = ({windows}) => ({
+const mapStateToProps = ({ windows }) => ({
   windows
 });
 
