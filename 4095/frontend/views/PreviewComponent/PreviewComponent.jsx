@@ -7,7 +7,7 @@ class PreviewComponent extends PureComponent{
 
     render(){
         const { preview } = this.props.windows;
-        console.log('--preview.data', preview.data)
+
         return(
             <div className='PreviewComponent'>
                 <h6>

@@ -13,7 +13,6 @@ const setRequestType = (value) => {
 };
 
 const setRequestURLParams = (value) => {
-    console.log('--value', value)
     return {
         type: 'set_requestURLParams',
         payload: value

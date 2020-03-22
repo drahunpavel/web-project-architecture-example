@@ -40,19 +40,19 @@ router.post('/processRequest', async (req, res, next) => {
     logLineAsync(logFN, `[${port}] ` + `params: ${JSON.stringify(body)}`);
     logLineAsync(logFN, `[${port}] ` + `proxied`);
 
-    // const proxy_response=await fetch(`http://nodearch.e-learning.by:3050/service2?par1=${req.params.aaa}&par2=777`);
-    // const proxy_response = await fetch(`http://nodearch.e-learning.by:3050/service2?par1=service&par2=777`);
-    // const proxy_response = await fetch('https://www.bps-sberbank.by/Portal/public/deposit/group/list')
-    const params = {
-        // url: body.url,
-        method: body.requestType,
-      };
+    let params = { };
+    let urlParams = '?';
+    if(body.requestType === 'GET'){
+        params.method = body.requestType;
+        body.requestURLParams.length && body.requestURLParams.map((item) => {
+            if(item.key.length || item.value.length)
+            urlParams += `${item.key}=${item.value}&`
+        });
 
-    const proxy_response = await fetch(`${body.url}`, params);
-    const proxy_text = await proxy_response.text();
-
-    console.log('--body', body)
-    res.send(proxy_text);
+        const proxy_response = await fetch(`${body.url}${urlParams}`, params);
+        const proxy_text = await proxy_response.text();
+        res.send(proxy_text);
+    };
 });
 
 router.get('/getHistoryList', async (req, res, next) => {

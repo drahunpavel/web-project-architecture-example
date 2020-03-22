@@ -38,7 +38,7 @@ class MainComponent extends PureComponent {
       method: value.requestType,
     };
 
-    API.processRequest(params).then((resolve, reject) => {
+    API.processRequest(value).then((resolve, reject) => {
       if (resolve) {
         setPreview(resolve);
         showNotification('success', '', 'service processRequest');

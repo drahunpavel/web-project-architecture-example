@@ -218,6 +218,9 @@ class DataInputComponent extends PureComponent {
         if(requestType === 'GET'){
             newParams.url = url;
             newParams.requestType = requestType;
+            newParams.requestURLParams = requestURLParams;
+            newParams.requestHeadersParams = requestHeadersParams;
+            
             cbSendRequest(newParams);
         }else{
 
@@ -235,7 +238,7 @@ class DataInputComponent extends PureComponent {
             setPreview
         } = this.props.acWindows;
 
-        setRequestURLParams('');
+        setRequestURLParams([{ key: '', value: '' }]);
         setRequestHeadersParams([{ key: '', value: '' }]);
         setFormDataParams([{ key: '', value: '' }]);
         setUrlencodedParams([{ key: '', value: '' }]);
