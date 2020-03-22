@@ -1,5 +1,9 @@
 import React, { PureComponent, Fragment } from 'react';
 import { remove } from 'lodash';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+import * as acWindows from '../../action/acWindows';
 
 import('./DataInputComponent.scss');
 
@@ -26,47 +30,39 @@ class DataInputComponent extends PureComponent {
     };
 
     showUrlParams = () => {
+        const { setRequestURLParams } = this.props.acWindows;
 
-        this.setState({
-            stateUrlParams: !this.state.stateUrlParams,
-            params: {
-                ...this.state.params,
-                requestURLParams: [{ key: '', value: '' }],
-            }
-        });
+        setRequestURLParams([{ key: '', value: '' }]);
+        this.setState({ stateUrlParams: !this.state.stateUrlParams });
     };
 
     showHeadersParams = () => {
+        const { setRequestHeadersParams } = this.props.acWindows;
 
-        this.setState({
-            stateHeadersParams: !this.state.stateHeadersParams,
-            params: {
-                ...this.state.params,
-                requestHeadersParams: [{ key: '', value: '' }],
-            }
-        });
+        setRequestHeadersParams([{ key: '', value: '' }]);
+        this.setState({ stateHeadersParams: !this.state.stateHeadersParams });
     };
 
     handleCheckParams = (EO) => {
         const { 
-            requestURLParams, 
+            requestURLParams,
             requestHeadersParams,
-            formDataParams, 
+            formDataParams,
             urlencodedParams
-        } = this.state.params;
+        } = this.props.windows;
+        const { 
+            setRequestURLParams,
+            setRequestHeadersParams,
+            setFormDataParams,
+            setUrlencodedParams
+        } = this.props.acWindows;
 
-        
         switch (EO.target.dataset.name) {
             case 'paramsUrl':
                 //если клие по последнему элементу, то добавляем новое поле
                 if (+EO.target.dataset.id === requestURLParams.length - 1) {
                     let newrequestURLParams = [...requestURLParams, { key: '', value: '' }];
-                    this.setState({
-                        params: {
-                            ...this.state.params,
-                            requestURLParams: newrequestURLParams
-                        }
-                    });
+                    setRequestURLParams(newrequestURLParams);
                 };
                 break;
 
@@ -74,12 +70,7 @@ class DataInputComponent extends PureComponent {
                 //если клие по последнему элементу, то добавляем новое поле
                 if (+EO.target.dataset.id === formDataParams.length - 1) {
                     let newformDataParams = [...formDataParams, { key: '', value: '' }];
-                    this.setState({
-                        params: {
-                            ...this.state.params,
-                            formDataParams: newformDataParams
-                        }
-                    });
+                    setFormDataParams(newformDataParams)
                 };
                 break;
 
@@ -87,12 +78,7 @@ class DataInputComponent extends PureComponent {
                 //если клие по последнему элементу, то добавляем новое поле
                 if (+EO.target.dataset.id === urlencodedParams.length - 1) {
                     let newUrlencodedParams = [...urlencodedParams, { key: '', value: '' }];
-                    this.setState({
-                        params: {
-                            ...this.state.params,
-                            urlencodedParams: newUrlencodedParams
-                        }
-                    });
+                    setUrlencodedParams(newUrlencodedParams);
                 };
                 break;
 
@@ -100,12 +86,7 @@ class DataInputComponent extends PureComponent {
                 //если клие по последнему элементу, то добавляем новое поле
                 if (+EO.target.dataset.id === requestHeadersParams.length - 1) {
                     let newrequestHeadersParams = [...requestHeadersParams, { key: '', value: '' }];
-                    this.setState({
-                        params: {
-                            ...this.state.params,
-                            requestHeadersParams: newrequestHeadersParams
-                        }
-                    });
+                    setRequestHeadersParams(newrequestHeadersParams);
                 };
                 break;
 
@@ -115,33 +96,39 @@ class DataInputComponent extends PureComponent {
 
     deleteParams = (EO) => {
         const { 
-            requestURLParams, 
-            formDataParams, 
-            urlencodedParams,
-            requestHeadersParams
-        } = this.state.params;
+            requestURLParams,
+            requestHeadersParams,
+            formDataParams,
+            urlencodedParams
+        } = this.props.windows;
+        const { 
+            setRequestURLParams,
+            setRequestHeadersParams,
+            setFormDataParams,
+            setUrlencodedParams
+        } = this.props.acWindows;
 
         switch (EO.target.dataset.name) {
 
             case 'paramsUrl':
                 let newrequestURLParams = remove(requestURLParams, (item, index) => { return index != +EO.target.dataset.id })
-                this.setState({ params: {...this.state.params, requestURLParams: newrequestURLParams }});
+                setRequestURLParams(newrequestURLParams);
             break;
 
             case 'paramsFormData':
                 let newFormDataParams = remove(formDataParams, (item, index) => { return index != +EO.target.dataset.id })
-                this.setState({ params: {...this.state.params, formDataParams: newFormDataParams }});
+                setFormDataParams(newFormDataParams);
             break;
 
             case 'paramsUrlencoded':
                 let newUrlencodedParams = remove(urlencodedParams, (item, index) => { return index != +EO.target.dataset.id })
-                this.setState({ params: {...this.state.params, urlencodedParams: newUrlencodedParams}});
+                setUrlencodedParams(newUrlencodedParams);
             break;
 
             case 'paramsHeaders':
                 let newRequestHeadersParams = remove(requestHeadersParams, (item, index) => { return index != +EO.target.dataset.id })
-                this.setState({ params: { ...this.state.params, requestHeadersParams: newRequestHeadersParams }});
-            break;
+                setRequestHeadersParams(newRequestHeadersParams);
+                break;
 
             default: break
         };
@@ -159,66 +146,69 @@ class DataInputComponent extends PureComponent {
     };
 
     handleChange = (event) => {
-
         const selectedValue = event.target.value;
-        this.setState({
-            params: {
-                ...this.state.params,
-                requestType: selectedValue
-            }
-        });
+        const { setRequestType } = this.props.acWindows;
+
+        setRequestType(selectedValue);
     };
 
     onChange = (EO) => {
         const { 
             requestURLParams,
-            formDataParams,
-            urlencodedParams,
             requestHeadersParams,
-            rawParams
-        } = this.state.params;
+            formDataParams,
+            urlencodedParams
+        } = this.props.windows;
+        const { 
+            setRequestURLParams,
+            setRequestHeadersParams,
+            setFormDataParams,
+            setUrlencodedParams,
+            setUrl,
+            setRawParams
+        } = this.props.acWindows;
 
         let fieldName = EO.target.dataset.field;
         let fieldID = EO.target.dataset.id;
 
         switch(fieldName){
             case '_url': 
-                this.setState({params: {...this.state.params, url: EO.target.value}});
+                setUrl(EO.target.value);
             break;
             case '_row': 
-                this.setState({params: {...this.state.params, rawParams: EO.target.value}});
+                setRawParams(EO.target.value);
             break;
             case '_formDataKey':
                 if(fieldName === '_formDataKey') formDataParams[fieldID]['key'] = EO.target.value;
-                this.setState({params: {...this.state.params, ...formDataParams}});
+                setFormDataParams([...formDataParams]);
             break;
             case '_formDataValue':
                 if(fieldName === '_formDataValue') formDataParams[fieldID]['value'] = EO.target.value;
-                this.setState({params: {...this.state.params, ...formDataParams}});
+                setFormDataParams([...formDataParams]);
             break;
             case '_urlencodedKey':
                 if(fieldName === '_urlencodedKey') urlencodedParams[fieldID]['key'] = EO.target.value;
-                this.setState({params: {...this.state.params, ...urlencodedParams}});
+                setUrlencodedParams([...urlencodedParams]);
             break;
             case '_urlencodedValue':
                 if(fieldName === '_urlencodedValue') urlencodedParams[fieldID]['value'] = EO.target.value;
-                this.setState({params: {...this.state.params, ...urlencodedParams}});
+                setUrlencodedParams([...urlencodedParams]);
             break;
             case '_urlKey':
                 if(fieldName === '_urlKey') requestURLParams[fieldID]['key'] = EO.target.value;
-                this.setState({params: {...this.state.params, ...requestURLParams}});
+                setRequestURLParams([...requestURLParams]);
             break;
             case '_urlValue':
                 if(fieldName === '_urlValue') requestURLParams[fieldID]['value'] = EO.target.value;
-                this.setState({params: {...this.state.params, ...requestURLParams}});
+                setRequestURLParams([...requestURLParams]);
             break;
             case '_headersKey':
                 if(fieldName === '_headersKey') requestHeadersParams[fieldID]['key'] = EO.target.value;
-                this.setState({params: {...this.state.params, ...requestHeadersParams}});
+                setRequestHeadersParams([...requestHeadersParams]);
             break;
             case '_headersValue':
                 if(fieldName === '_headersValue') requestHeadersParams[fieldID]['value'] = EO.target.value;
-                this.setState({params: {...this.state.params, ...requestHeadersParams}});
+                setRequestHeadersParams([...requestHeadersParams]);
             break;
 
             default: break;
@@ -227,12 +217,20 @@ class DataInputComponent extends PureComponent {
 
     sendParams = () => {
         const { cbSendRequest } = this.props;
-        const { params } = this.state;
+        const { 
+            url,
+            requestType,
+            requestURLParams,
+            requestHeadersParams,
+            formDataParams,
+            urlencodedParams,
+            rawParams
+        } = this.props.windows;
         let newParams = {};
 
-        if(params.requestType === 'GET'){
-            newParams.url = params.url;
-            newParams.requestType = params.requestType;
+        if(requestType === 'GET'){
+            newParams.url = url;
+            newParams.requestType = requestType;
             cbSendRequest(newParams);
         }else{
 
@@ -240,17 +238,21 @@ class DataInputComponent extends PureComponent {
     };
 
     onClickResetParams = () => {
+        const { 
+            setRequestURLParams,
+            setRequestHeadersParams,
+            setFormDataParams,
+            setUrlencodedParams,
+            setUrl,
+            setRawParams
+        } = this.props.acWindows;
 
-        this.setState({
-            params: {
-                url: '',
-                requestURLParams: [{ key: '', value: '' }],
-                requestHeadersParams: [{ key: '', value: '' }],
-                formDataParams: [{ key: '', value: '' }],
-                urlencodedParams: [{ key: '', value: '' }],
-                rawParams: ''
-            },
-        })
+        setRequestURLParams('');
+        setRequestHeadersParams([{ key: '', value: '' }]);
+        setFormDataParams([{ key: '', value: '' }]);
+        setUrlencodedParams([{ key: '', value: '' }]);
+        setUrl('');
+        setRawParams('')
     };
 
     render() {
@@ -260,6 +262,7 @@ class DataInputComponent extends PureComponent {
             params,
             activeButtonParams
         } = this.state;
+        
         const {
             requestURLParams,
             requestHeadersParams,
@@ -268,11 +271,11 @@ class DataInputComponent extends PureComponent {
             requestType,
             url,
             rawParams
-        } = params;
+        } = this.props.windows;
 
         let butUrl = stateUrlParams ? 'active' : '';
         let butHed = stateHeadersParams ? 'active' : '';
-        console.log('--', this.props.selectedObj)
+
         return (
             <div className='DataInputComponent'>
                 <div className='request-url-wrapper'>
@@ -351,4 +354,12 @@ class DataInputComponent extends PureComponent {
     };
 };
 
-export default DataInputComponent;
+const mapStateToProps = ({windows}) => ({
+    windows
+});
+
+const mapDispatchToProps = (dispatch) => ({
+    acWindows: bindActionCreators(acWindows, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(DataInputComponent);
