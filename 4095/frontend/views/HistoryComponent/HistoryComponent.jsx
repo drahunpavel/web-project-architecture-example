@@ -58,27 +58,52 @@ class HistoryComponent extends PureComponent {
         } = this.props.windows;
 
         let selectedRequest = find(historyList, (item, index) => { return index === +event.target.dataset.id });
-        console.log('--selectedRequest', selectedRequest)
-
-        setUrl(selectedRequest.url ? selectedRequest.url : '');
-        setRequestType(selectedRequest.requestType ? selectedRequest.requestType : 'GET');
-        if(selectedRequest.requestURLParams && selectedRequest.requestURLParams.length){
-            setRequestURLParams(selectedRequest.requestURLParams);
-            setStateUrlParams(true);
-        }else{
-            setRequestURLParams([{ key: '', value: '' }]);
-            setStateUrlParams(false);
+        let deleteID = event.target.dataset.delete;
+        
+        if(selectedRequest){
+            setUrl(selectedRequest.url ? selectedRequest.url : '');
+            setRequestType(selectedRequest.requestType ? selectedRequest.requestType : 'GET');
+            if(selectedRequest.requestURLParams && selectedRequest.requestURLParams.length){
+                setRequestURLParams(selectedRequest.requestURLParams);
+                setStateUrlParams(true);
+            }else{
+                setRequestURLParams([{ key: '', value: '' }]);
+                setStateUrlParams(false);
+            };
+            if(selectedRequest.requestHeadersParams && selectedRequest.requestHeadersParams.length){
+                setRequestHeadersParams(selectedRequest.requestHeadersParams);
+                setStateHeadersParams(true);
+            }else{
+                setRequestHeadersParams([{ key: '', value: '' }]);
+                setStateHeadersParams(false);
+            };
         };
-        if(selectedRequest.requestHeadersParams && selectedRequest.requestHeadersParams.length){
-            setRequestHeadersParams(selectedRequest.requestHeadersParams);
-            setStateHeadersParams(true);
-        }else{
-            setRequestHeadersParams([{ key: '', value: '' }]);
-            setStateHeadersParams(false);
+
+        if(deleteID && typeof selectedRequest === 'undefined'){
+            const data = {deleteID: event.target.dataset.delete}
+
+            API.deleteRequest(data).then((resolve, reject) => {
+                if (resolve) {
+                    showNotification('success', '', 'service deleteRequest');
+                    this.getHistoryList();
+                } else {
+                    showNotification('error', '', 'service deleteRequest');
+                }
+            });
         };
+    };
 
+    getHistoryList = () => {
+        const { setHistoryList } = this.props.acWindows;
 
-        console.log('--delete', event.target.dataset.delete)
+        API.getHistoryList().then((resolve, reject) => {
+            if (resolve) {
+                setHistoryList(resolve.data);
+                showNotification('success', '', 'service getHistoryList');
+            } else {
+                showNotification('error', '', 'service getHistoryList');
+            }
+        });
     };
 
     render() {
@@ -88,14 +113,14 @@ class HistoryComponent extends PureComponent {
             <div className="sidebar">
                 <div className='HistoryComponent'>
                     <h3>Custom Postman</h3>
-                    <button className="btn btn-primary" type="submit">History</button>
+                    <button onClick={this.getHistoryList} className="btn btn-primary" type="submit">History</button>
                     <button className="btn btn-danger" type="submit">Clear All</button>
                     <div className='list-wrapper'>
                         {historyList.map((item, index) => 
-                            <h6 key={index} onClick={this.onHandleClick} data-id={index}>
-                                <span className="badge badge-warning" data-id={index}>{item.requestType}</span>
-                                <span data-id={index}>{item.url}</span>
-                                <span data-delete='1' className="badge badge-secondary">X</span>
+                            <h6 key={index} onClick={this.onHandleClick} data-id={item.id}>
+                                <span className="badge badge-warning" data-id={item.id}>{item.requestType}</span>
+                                <span data-id={item.id}>{item.url}</span>
+                                <span data-delete={item.id} className="badge badge-secondary">X</span>
                             </h6>
                         )}
                     </div>

@@ -19,5 +19,6 @@ export const API = {
     // }),
     processRequest: async (data) => axios.post('/api/processRequest', data), 
     getHistoryList: async () => axios.get('/api/getHistoryList'),
-    addNewRequest: async (data) => axios.post('/api/addNewRequest', data)
+    addNewRequest: async (data) => axios.post('/api/addNewRequest', data),
+    deleteRequest: async (data) => axios.post('/api/deleteRequest', data)
 };

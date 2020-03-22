@@ -113,4 +113,33 @@ router.post('/addNewRequest', async (req, res, next) => {
     });
 });
 
+router.post('/deleteRequest', async (req, res, next) => { 
+    const { body } = req;
+
+    logLineAsync(logFN, `[${port}] ` + `service /api/deleteRequest called`);
+
+    fs.readFile(path.join(__dirname, '../files', 'historyList.json'), 'utf8', (err, data) => {
+        if (err) throw err;
+
+        let parsData = JSON.parse(data);
+        let deleteID = body.deleteID;
+        logLineAsync(logFN, `[${port}] ` + `received deleteID: ${deleteID}`);
+
+        const positiveArr = parsData.filter((item) => { return item.id != +deleteID });
+        let jsonContent = JSON.stringify(positiveArr);
+    
+        fs.writeFile(fileHistory, jsonContent, 'utf8', (err) => {
+            if (err) throw err;
+
+            logLineAsync(logFN, `[${port}] ` + `fileHistory.json updated`);
+            const answer= {
+                errorCode: 0,
+                errorDesription: 'Новые параметры добавлены'
+            };
+            res.setHeader("Content-Type", "application/json");
+            res.send(answer);
+        });
+    });
+});
+
 module.exports = router;
