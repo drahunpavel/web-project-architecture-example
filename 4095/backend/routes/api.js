@@ -40,15 +40,24 @@ router.post('/processRequest', async (req, res, next) => {
     logLineAsync(logFN, `[${port}] ` + `params: ${JSON.stringify(body)}`);
     logLineAsync(logFN, `[${port}] ` + `proxied`);
 
-    let params = { };
+    let params = { }; //параметры запроса
     let urlParams = '?';
+    let headersParams = '';
     if(body.requestType === 'GET'){
         params.method = body.requestType;
         body.requestURLParams.length && body.requestURLParams.map((item) => {
             if(item.key.length || item.value.length)
             urlParams += `${item.key}=${item.value}&`
         });
+        body.requestHeadersParams.length && body.requestHeadersParams.map((item) => {
+            if(item.key.length || item.value.length)
+            console.log('--item', item)
+            headersParams += `${item.key}:${item.value}, `;
+        });
 
+        params.headers = {headersParams};
+
+        console.log('--headersParams', headersParams)
         const proxy_response = await fetch(`${body.url}${urlParams}`, params);
         const proxy_text = await proxy_response.text();
         res.send(proxy_text);

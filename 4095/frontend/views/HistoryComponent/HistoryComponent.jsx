@@ -31,7 +31,6 @@ class HistoryComponent extends PureComponent {
 
     onHandleClick = (event) => {
         const { historyList } = this.state;
-
         const { 
             setRequestURLParams,
             setRequestHeadersParams,
@@ -39,14 +38,45 @@ class HistoryComponent extends PureComponent {
             setUrlencodedParams,
             setUrl,
             setRawParams,
-            setRequestType
+            setPreview,
+            setRequestType,
+            setStateUrlParams,
+            setStateHeadersParams,
+            setActiveButtonParams
         } = this.props.acWindows;
+        const {
+            requestURLParams,
+            requestHeadersParams,
+            formDataParams,
+            urlencodedParams,
+            requestType,
+            url,
+            rawParams,
+            stateUrlParams,
+            stateHeadersParams,
+            activeButtonParams
+        } = this.props.windows;
 
         let selectedRequest = find(historyList, (item, index) => { return index === +event.target.dataset.id });
         console.log('--selectedRequest', selectedRequest)
-        console.log('--requestURLParams', selectedRequest.requestURLParams ? 'да' : 'нет')
+
         setUrl(selectedRequest.url ? selectedRequest.url : '');
         setRequestType(selectedRequest.requestType ? selectedRequest.requestType : 'GET');
+        if(selectedRequest.requestURLParams && selectedRequest.requestURLParams.length){
+            setRequestURLParams(selectedRequest.requestURLParams);
+            setStateUrlParams(true);
+        }else{
+            setRequestURLParams([{ key: '', value: '' }]);
+            setStateUrlParams(false);
+        };
+        if(selectedRequest.requestHeadersParams && selectedRequest.requestHeadersParams.length){
+            setRequestHeadersParams(selectedRequest.requestHeadersParams);
+            setStateHeadersParams(true);
+        }else{
+            setRequestHeadersParams([{ key: '', value: '' }]);
+            setStateHeadersParams(false);
+        };
+
 
         console.log('--delete', event.target.dataset.delete)
     };

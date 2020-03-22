@@ -6,7 +6,11 @@ const initialState = {
     formDataParams: [{ key: '', value: '' }],
     urlencodedParams: [{ key: '', value: '' }],
     rawParams: '',
-    preview: ''
+    preview: '',
+
+    stateUrlParams: false,
+    stateHeadersParams: false,
+    activeButtonParams: { fd: 'active', xwfu: '', r: '' }
 };
 
 export default function windows(state = initialState, action) {
@@ -27,6 +31,13 @@ export default function windows(state = initialState, action) {
             return { ...state, rawParams: action.payload }
         case 'set_Preview':
             return { ...state, preview: action.payload }
+            
+        case 'set_stateUrlParams':
+            return { ...state, stateUrlParams: action.payload }
+        case 'set_stateHeadersParams':
+            return { ...state, stateHeadersParams: action.payload }
+        case 'set_activeButtonParams':
+            return { ...state, activeButtonParams: action.payload }
         default:
             return state;
     };

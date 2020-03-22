@@ -54,6 +54,27 @@ const setPreview = (value) => {
     };
 };
 
+const setStateUrlParams = (value) => {
+    return {
+        type: 'set_stateUrlParams',
+        payload: value
+    };
+};
+
+const setStateHeadersParams = (value) => {
+    return {
+        type: 'set_stateHeadersParams',
+        payload: value
+    };
+};
+
+const setActiveButtonParams = (value) => {
+    return {
+        type: 'set_activeButtonParams',
+        payload: value
+    };
+};
+
 export {
     setUrl,
     setRequestType,
@@ -62,5 +83,9 @@ export {
     setFormDataParams,
     setUrlencodedParams,
     setRawParams,
-    setPreview
+    setPreview,
+
+    setStateUrlParams,
+    setStateHeadersParams,
+    setActiveButtonParams
 };

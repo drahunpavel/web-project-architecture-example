@@ -10,24 +10,20 @@ import('./DataInputComponent.scss');
 
 class DataInputComponent extends PureComponent {
 
-    state = {
-        stateUrlParams: false,
-        stateHeadersParams: false,
-        activeButtonParams: { fd: 'active', xwfu: '', r: '' }
-    };
-
     showUrlParams = () => {
-        const { setRequestURLParams } = this.props.acWindows;
+        const { setRequestURLParams, setStateUrlParams } = this.props.acWindows;
+        const { stateUrlParams } = this.props.windows;
 
         setRequestURLParams([{ key: '', value: '' }]);
-        this.setState({ stateUrlParams: !this.state.stateUrlParams });
+        setStateUrlParams(!stateUrlParams)
     };
 
     showHeadersParams = () => {
-        const { setRequestHeadersParams } = this.props.acWindows;
+        const { setRequestHeadersParams, setStateHeadersParams } = this.props.acWindows;
+        const { stateHeadersParams } = this.props.windows;
 
         setRequestHeadersParams([{ key: '', value: '' }]);
-        this.setState({ stateHeadersParams: !this.state.stateHeadersParams });
+        setStateHeadersParams(!stateHeadersParams);
     };
 
     handleCheckParams = (EO) => {
@@ -122,13 +118,14 @@ class DataInputComponent extends PureComponent {
     };
 
     handleCheckButtonParams = (EO) => {
+        const { setActiveButtonParams } = this.props.acWindows;
 
         if (EO.target.dataset.button === 'xwfu') {
-            this.setState({ activeButtonParams: { fd: '', xwfu: 'active', r: '' } });
+            setActiveButtonParams({ fd: '', xwfu: 'active', r: '' });
         } else if (EO.target.dataset.button === 'fd') {
-            this.setState({ activeButtonParams: { fd: 'active', xwfu: '', r: '' } });
+            setActiveButtonParams({ fd: 'active', xwfu: '', r: '' });
         } else if (EO.target.dataset.button === 'r') {
-            this.setState({ activeButtonParams: { fd: '', xwfu: '', r: 'active' } });
+            setActiveButtonParams({ fd: '', xwfu: '', r: 'active' });
         };
     };
 
@@ -249,20 +246,16 @@ class DataInputComponent extends PureComponent {
 
     render() {
         const {
-            stateUrlParams,
-            stateHeadersParams,
-            params,
-            activeButtonParams
-        } = this.state;
-        
-        const {
             requestURLParams,
             requestHeadersParams,
             formDataParams,
             urlencodedParams,
             requestType,
             url,
-            rawParams
+            rawParams,
+            stateUrlParams,
+            stateHeadersParams,
+            activeButtonParams
         } = this.props.windows;
 
         let butUrl = stateUrlParams ? 'active' : '';

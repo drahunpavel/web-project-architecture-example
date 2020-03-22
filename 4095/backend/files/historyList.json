@@ -2,7 +2,8 @@
     {
         "url": "http://nodearch.e-learning.by:3050/service2",
         "requestType": "GET",
-        "requestURLParams": [{"key": "par1", "value": "service"}, {"key": "par2", "value": "777"}]
+        "requestURLParams": [{"key": "par1", "value": "service"}, {"key": "par2", "value": "777"}],
+        "requestHeadersParams": [{"key": "Accept", "value": "application/json, text/plain, */*"}, {"key": "Content-Type", "value": "application/json;charset=UTF-8"}]
     },
     {
         "url": "http://nodearch.e-learning.by:3050/service2",
