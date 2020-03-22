@@ -3,6 +3,8 @@ import { remove } from 'lodash';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import { showNotification } from '../../utils/notification';
+
 import * as acWindows from '../../action/acWindows';
 
 import('./DataInputComponent.scss');
@@ -244,6 +246,11 @@ class DataInputComponent extends PureComponent {
         setPreview('');
     };
 
+    onClickPreview = () => {
+        showNotification('info', '', 'Preview button doesnt work :)');
+    };
+
+
     render() {
         const {
             requestURLParams,
@@ -331,7 +338,7 @@ class DataInputComponent extends PureComponent {
                 </div>}
                 <div className='request-actions'>
                     <button onClick={this.sendParams} type="button" className="btn btn-outline-primary">Send</button>
-                    <button type="button" className="btn btn-outline-success">Preview</button>
+                    <button onClick={this.onClickPreview} type="button" className="btn btn-outline-success">Preview</button>
                     <button onClick={this.onClickResetParams} type="button" className="btn btn-outline-danger">Reset</button>
                 </div>
             </div>

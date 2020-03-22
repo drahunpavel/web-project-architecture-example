@@ -106,6 +106,10 @@ class HistoryComponent extends PureComponent {
         });
     };
 
+    onClickClearAll = () => {
+        showNotification('info', '', 'Clear All button doesnt work :)');
+    };
+
     render() {
         const { historyList } = this.props.windows;
 
@@ -114,7 +118,7 @@ class HistoryComponent extends PureComponent {
                 <div className='HistoryComponent'>
                     <h3>Custom Postman</h3>
                     <button onClick={this.getHistoryList} className="btn btn-primary" type="submit">History</button>
-                    <button className="btn btn-danger" type="submit">Clear All</button>
+                    <button onClick={this.onClickClearAll} className="btn btn-danger" type="submit">Clear All</button>
                     <div className='list-wrapper'>
                         {historyList.map((item, index) => 
                             <h6 key={index} onClick={this.onHandleClick} data-id={item.id}>
