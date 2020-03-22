@@ -46,6 +46,20 @@ class MainComponent extends PureComponent {
         showNotification('error', '', 'service processRequest')
       }
     });
+
+
+    const par = {
+      requestType: 'POST',
+      url: 'http://localhost:4096/api/addNewRequest'
+    }
+
+    API.addNewRequest(par).then((resolve, reject) => {
+      if (resolve) {
+        showNotification('success', '', 'service addNewRequest');
+      } else {
+        showNotification('error', '', 'service addNewRequest')
+      }
+    })
   };
 
 

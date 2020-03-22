@@ -1,17 +1,1 @@
-[
-    {
-        "url": "http://nodearch.e-learning.by:3050/service2",
-        "requestType": "GET",
-        "requestURLParams": [{"key": "par1", "value": "service"}, {"key": "par2", "value": "777"}],
-        "requestHeadersParams": [{"key": "Accept", "value": "application/json, text/plain, */*"}, {"key": "Content-Type", "value": "application/json;charset=UTF-8"}]
-    },
-    {
-        "url": "http://nodearch.e-learning.by:3050/service2",
-        "requestType": "GET",
-        "requestURLParams": [{"key": "par3", "value": "service1243"}, {"key": "par4", "value": "7dfdfdfd77"}]
-    },
-    {
-        "url": "https://www.bps-sberbank.by/Portal/public/deposit/group/list",
-        "requestType": "GET"
-    }
-]
+[{"id":0,"url":"http://nodearch.e-learning.by:3050/service2","requestType":"GET","requestURLParams":[{"key":"par1","value":"service"},{"key":"par2","value":"777"}],"requestHeadersParams":[{"key":"Accept","value":"application/json, text/plain, */*"},{"key":"Content-Type","value":"application/json;charset=UTF-8"}]},{"id":1,"url":"http://nodearch.e-learning.by:3050/service2","requestType":"GET","requestURLParams":[{"key":"par3","value":"service1243"},{"key":"par4","value":"7dfdfdfd77"}]},{"id":2,"url":"https://www.bps-sberbank.by/Portal/public/deposit/group/list","requestType":"GET"},{"requestType":"POST","url":"http://localhost:4096/api/addNewRequest","id":3},{"requestType":"POST","url":"http://localhost:4096/api/addNewRequest","id":4},{"requestType":"POST","url":"http://localhost:4096/api/addNewRequest","id":5},{"requestType":"POST","url":"http://localhost:4096/api/addNewRequest","id":6}]

@@ -6,6 +6,7 @@ const fetch = require("isomorphic-fetch");
 
 const port = 4096;
 const logFN = path.join(__dirname, '../_server.log'); //логирование
+const fileHistory = path.resolve(__dirname, '../files/historyList.json');
 
 const { logLineAsync } = require('../utils/utils');
 
@@ -51,13 +52,14 @@ router.post('/processRequest', async (req, res, next) => {
         });
         body.requestHeadersParams.length && body.requestHeadersParams.map((item) => {
             if(item.key.length || item.value.length)
-            console.log('--item', item)
             headersParams += `${item.key}:${item.value}, `;
         });
+        //обрезает последний символ строки
+        if(body.requestHeadersParams.length){
+            let updHeadersParams = headersParams.slice(0,-1);
+            params.headers = {updHeadersParams};
+        };
 
-        params.headers = {headersParams};
-
-        console.log('--headersParams', headersParams)
         const proxy_response = await fetch(`${body.url}${urlParams}`, params);
         const proxy_text = await proxy_response.text();
         res.send(proxy_text);
@@ -82,6 +84,32 @@ router.get('/getHistoryList', async (req, res, next) => {
       });
 });
 
+router.post('/addNewRequest', async (req, res, next) => {
+    const { body } = req;
 
+    logLineAsync(logFN, `[${port}] ` + `service /api/addNewRequest called`);
+
+    fs.readFile(path.join(__dirname, '../files', 'historyList.json'), 'utf8', (err, data) => {
+        if (err) throw err;
+
+        let parsData = JSON.parse(data);
+        let newParams = body;
+        newParams.id = parsData.length;
+        let obj = [...parsData, newParams];
+        let jsonContent = JSON.stringify(obj);
+
+        fs.writeFile(fileHistory, jsonContent, 'utf8', (err) => {
+            if (err) throw err;
+
+            logLineAsync(logFN, `[${port}] ` + `fileHistory.json updated`);
+            const answer= {
+                errorCode: 0,
+                errorDesription: 'Новые параметры добавлены'
+            };
+            res.setHeader("Content-Type", "application/json");
+            res.send(answer);
+        });
+    });
+});
 
 module.exports = router;
