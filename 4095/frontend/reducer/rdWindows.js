@@ -5,7 +5,8 @@ const initialState = {
     requestHeadersParams: [{ key: '', value: '' }],
     formDataParams: [{ key: '', value: '' }],
     urlencodedParams: [{ key: '', value: '' }],
-    rawParams: ''
+    rawParams: '',
+    preview: ''
 };
 
 export default function windows(state = initialState, action) {
@@ -24,6 +25,8 @@ export default function windows(state = initialState, action) {
             return { ...state, urlencodedParams: action.payload }
         case 'set_rawParams':
             return { ...state, rawParams: action.payload }
+        case 'set_Preview':
+            return { ...state, preview: action.payload }
         default:
             return state;
     };

@@ -1,8 +1,12 @@
 import React, { PureComponent, Fragment } from 'react';
 import { find } from 'lodash';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import { API } from '../../network/API';
 import { showNotification } from '../../utils/notification';
+
+import * as acWindows from '../../action/acWindows';
 
 import('./HistoryComponent.scss');
 
@@ -27,11 +31,22 @@ class HistoryComponent extends PureComponent {
 
     onHandleClick = (event) => {
         const { historyList } = this.state;
-        const { cbSingleClick } = this.props;
+
+        const { 
+            setRequestURLParams,
+            setRequestHeadersParams,
+            setFormDataParams,
+            setUrlencodedParams,
+            setUrl,
+            setRawParams,
+            setRequestType
+        } = this.props.acWindows;
 
         let selectedRequest = find(historyList, (item, index) => { return index === +event.target.dataset.id });
-
-        cbSingleClick(selectedRequest);
+        console.log('--selectedRequest', selectedRequest)
+        console.log('--requestURLParams', selectedRequest.requestURLParams ? 'да' : 'нет')
+        setUrl(selectedRequest.url ? selectedRequest.url : '');
+        setRequestType(selectedRequest.requestType ? selectedRequest.requestType : 'GET');
 
         console.log('--delete', event.target.dataset.delete)
     };
@@ -60,4 +75,12 @@ class HistoryComponent extends PureComponent {
     };
 };
 
-export default HistoryComponent;
+const mapStateToProps = ({windows}) => ({
+    windows
+});
+
+const mapDispatchToProps = (dispatch) => ({
+    acWindows: bindActionCreators(acWindows, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(HistoryComponent);

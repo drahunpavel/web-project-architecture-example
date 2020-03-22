@@ -5,21 +5,28 @@ import HistoryComponent from '../HistoryComponent/HistoryComponent';
 import PreviewComponent from '../PreviewComponent/PreviewComponent';
 import Notification from '../Notification/Notification';
 
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+import * as acWindows from '../../action/acWindows';
+
 //utils
 import { API } from '../../network/API';
 import { showNotification } from '../../utils/notification';
 
 import('./MainComponent.scss');
 
-export default class MainComponent extends PureComponent {
+class MainComponent extends PureComponent {
 
   state = {
     selectedObj: {},
-    answer: {}
   };
 
   sendRequest = (value) => {
     console.log('-получили', value)
+    const { 
+      setPreview
+  } = this.props.acWindows;
 
     const params = {
       // url: 'https://www.bps-sberbank.by/Portal/public/deposit/catalog',
@@ -33,8 +40,7 @@ export default class MainComponent extends PureComponent {
 
     API.processRequest(params).then((resolve, reject) => {
       if (resolve) {
-        console.log('Успех', resolve.data);
-        this.setState({answer: resolve})
+        setPreview(resolve);
         showNotification('success', '', 'service processRequest');
       } else {
         showNotification('error', '', 'service processRequest')
@@ -42,29 +48,30 @@ export default class MainComponent extends PureComponent {
     });
   };
 
-  singleClick = (selectedObj) => {
-    this.setState({ selectedObj })
-  };
 
   render() {
-    const { selectedObj, answer } = this.state;
 
     return (
       <div className='MainComponent'>
         <Notification />
-        <HistoryComponent
-          cbSingleClick={this.singleClick}
-        />
+        <HistoryComponent/>
         <div className="content">
           <DataInputComponent
             cbSendRequest={this.sendRequest}
-            selectedObj={selectedObj}
           />
-          <PreviewComponent 
-            answer={answer}
-          />
+          <PreviewComponent/>
         </div>
       </div>
     );
   };
 };
+
+const mapStateToProps = ({windows}) => ({
+  windows
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  acWindows: bindActionCreators(acWindows, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(MainComponent);

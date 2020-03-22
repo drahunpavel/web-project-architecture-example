@@ -1,26 +1,25 @@
 import React, {PureComponent} from 'react';
+import { connect } from 'react-redux';
 
 import('./PreviewComponent.scss');
 
 class PreviewComponent extends PureComponent{
 
-    static defaultProps = {
-        answer: {}
-    };
-
     render(){
-        const { answer } = this.props;
-        console.log('--answer', answer)
+        const { preview } = this.props.windows;
+        console.log('--preview.data', preview.data)
         return(
             <div className='PreviewComponent'>
                 <h6>
                     Status:
-                    <small className="text-muted">{answer.status}</small>
+                    <small className="text-muted">{preview.status}</small>
                 </h6>
-                <textarea className="form-control" value={JSON.stringify(answer.data)} rows="13"></textarea>
+                <textarea className="form-control" value={preview && JSON.stringify(preview.data)} rows="13"></textarea>
             </div>
         );
     };
 };
 
-export default PreviewComponent;
+const mapStateToProps = ({windows}) => ({windows});
+
+export default connect(mapStateToProps, null)(PreviewComponent);

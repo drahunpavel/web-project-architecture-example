@@ -48,6 +48,13 @@ const setRawParams = (value) => {
     };
 };
 
+const setPreview = (value) => {
+    return {
+        type: 'set_Preview',
+        payload: value
+    };
+};
+
 export {
     setUrl,
     setRequestType,
@@ -55,5 +62,6 @@ export {
     setRequestHeadersParams,
     setFormDataParams,
     setUrlencodedParams,
-    setRawParams
+    setRawParams,
+    setPreview
 };

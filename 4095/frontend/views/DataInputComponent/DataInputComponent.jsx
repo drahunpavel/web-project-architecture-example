@@ -10,20 +10,7 @@ import('./DataInputComponent.scss');
 
 class DataInputComponent extends PureComponent {
 
-    static defaultProps = {
-        selectedObj: {}
-    };
-
     state = {
-        params: {
-            url: '',
-            requestType: 'GET',
-            requestURLParams: [{ key: '', value: '' }],
-            requestHeadersParams: [{ key: '', value: '' }],
-            formDataParams: [{ key: '', value: '' }],
-            urlencodedParams: [{ key: '', value: '' }],
-            rawParams: ''
-        },
         stateUrlParams: false,
         stateHeadersParams: false,
         activeButtonParams: { fd: 'active', xwfu: '', r: '' }
@@ -244,7 +231,8 @@ class DataInputComponent extends PureComponent {
             setFormDataParams,
             setUrlencodedParams,
             setUrl,
-            setRawParams
+            setRawParams,
+            setPreview
         } = this.props.acWindows;
 
         setRequestURLParams('');
@@ -252,7 +240,8 @@ class DataInputComponent extends PureComponent {
         setFormDataParams([{ key: '', value: '' }]);
         setUrlencodedParams([{ key: '', value: '' }]);
         setUrl('');
-        setRawParams('')
+        setRawParams('');
+        setPreview('');
     };
 
     render() {
