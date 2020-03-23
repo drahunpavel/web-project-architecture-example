@@ -4,7 +4,7 @@ const fs = require('fs');
 const router = express.Router();
 const fetch = require("isomorphic-fetch");
 
-const port = 4096;
+const port = 4095;
 const logFN = path.join(__dirname, '../_server.log'); //логирование
 const fileHistory = path.resolve(__dirname, '../files/historyList.json');
 

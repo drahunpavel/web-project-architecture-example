@@ -13,7 +13,7 @@ webserver.use(express.json()); // мидлварь, умеющая обраба�
 
 const { logLineSync } = require('./utils/utils');
 
-const port = 4096;
+const port = 4095;
 const logFN = path.join(__dirname, '_server.log'); //логирование
 
 //cors
