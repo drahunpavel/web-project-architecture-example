@@ -123,9 +123,11 @@ class DataInputComponent extends PureComponent {
         const { setActiveButtonParams } = this.props.acWindows;
 
         if (EO.target.dataset.button === 'xwfu') {
-            setActiveButtonParams({ fd: '', xwfu: 'active', r: '' });
+            // setActiveButtonParams({ fd: '', xwfu: 'active', r: '' });
+            showNotification('info', '', 'button doesnt work :)');
         } else if (EO.target.dataset.button === 'fd') {
-            setActiveButtonParams({ fd: 'active', xwfu: '', r: '' });
+            // setActiveButtonParams({ fd: 'active', xwfu: '', r: '' });
+            showNotification('info', '', 'button doesnt work :)');
         } else if (EO.target.dataset.button === 'r') {
             setActiveButtonParams({ fd: '', xwfu: '', r: 'active' });
         };
@@ -210,7 +212,8 @@ class DataInputComponent extends PureComponent {
             requestHeadersParams,
             formDataParams,
             urlencodedParams,
-            rawParams
+            rawParams,
+            activeButtonParams
         } = this.props.windows;
         let newParams = {};
 
@@ -222,9 +225,22 @@ class DataInputComponent extends PureComponent {
             
             cbSendRequest(newParams);
         }else if(requestType === 'POST'){
-            console.log('--url', url)
-            console.log('--rawParams', rawParams)
-            console.log('--requestHeadersParams', requestHeadersParams)
+            if(activeButtonParams.fd === 'active'){
+
+            }
+            if(activeButtonParams.xwfu === 'active'){
+                
+            }
+            if(activeButtonParams.r === 'active'){  
+                newParams.url = url;
+                newParams.requestType = requestType;
+                newParams.requestURLParams = requestURLParams;
+                newParams.requestHeadersParams = requestHeadersParams;
+                newParams.body = JSON.parse(rawParams);
+                newParams.type = 'r';
+
+                cbSendRequest(newParams);
+            }
         };
     };
 

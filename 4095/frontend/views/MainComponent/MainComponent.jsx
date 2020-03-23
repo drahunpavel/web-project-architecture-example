@@ -38,12 +38,19 @@ class MainComponent extends PureComponent {
       }
     });
 
-
-    const par = {
-      requestType: value.requestType,
-      url: value.url,
-      requestURLParams: value.requestURLParams ? value.requestURLParams : [{ key: '', value: '' }],
-      requestHeadersParams: value.requestHeadersParams ? value.requestHeadersParams : [{ key: '', value: '' }]
+    const par = {};
+    if (value.requestType === 'GET') {
+      par.requestType = value.requestType;
+      par.url = value.url;
+      par.requestURLParams = value.requestURLParams ? value.requestURLParams : [{ key: '', value: '' }];
+      par.requestHeadersParams = value.requestHeadersParams ? value.requestHeadersParams : [{ key: '', value: '' }];
+    } else {
+      par.requestType = value.requestType;
+      par.url = value.url;
+      par.requestURLParams = value.requestURLParams ? value.requestURLParams : [{ key: '', value: '' }];
+      par.requestHeadersParams = value.requestHeadersParams ? value.requestHeadersParams : [{ key: '', value: '' }];
+      par.type = value.type;
+      par.body = JSON.stringify(value.body);
     }
 
     API.addNewRequest(par).then((resolve, reject) => {

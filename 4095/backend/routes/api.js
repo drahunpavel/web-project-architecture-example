@@ -19,19 +19,19 @@ router.get('/', (req, res) => {
 
 //тестовый запрос
 router.get('/state', (req, res, next) => {
-    
+
     logLineAsync(logFN, `[${port}] ` + `service /api/state called`);
 
     fs.readFile(path.join(__dirname, '../files', 'variants.json'), 'utf8', (err, data) => {
         if (err) throw err;
- 
+
         logLineAsync(logFN, `[${port}] ` + `variants.json read`);
 
         let parsData = JSON.parse(data);
 
         res.setHeader("Content-Type", "application/json");
         res.send(parsData);
-      });
+    });
 });
 
 router.post('/processRequest', async (req, res, next) => {
@@ -41,37 +41,61 @@ router.post('/processRequest', async (req, res, next) => {
     logLineAsync(logFN, `[${port}] ` + `params: ${JSON.stringify(body)}`);
     logLineAsync(logFN, `[${port}] ` + `proxied`);
 
-    let params = { }; //параметры запроса
+    let params = {}; //параметры запроса
     let urlParams = '?';
     let headersParams = '';
-    if(body.requestType === 'GET'){
+    if (body.requestType === 'GET') {
         params.method = body.requestType;
         body.requestURLParams.length && body.requestURLParams.map((item) => {
-            if(item.key.length || item.value.length)
-            urlParams += `${item.key}=${item.value}&`
+            if (item.key.length || item.value.length)
+                urlParams += `${item.key}=${item.value}&`
         });
         body.requestHeadersParams.length && body.requestHeadersParams.map((item) => {
-            if(item.key.length || item.value.length)
-            headersParams += `${item.key}:${item.value}, `;
+            if (item.key.length || item.value.length)
+                headersParams += `${item.key}:${item.value}, `;
         });
         //обрезает последний символ строки
-        if(body.requestHeadersParams.length){
-            let updHeadersParams = headersParams.slice(0,-1);
-            params.headers = {updHeadersParams};
+        if (body.requestHeadersParams.length) {
+            let updHeadersParams = headersParams.slice(0, -1);
+            params.headers = { updHeadersParams };
         };
 
         // const proxy_response = await fetch(`${body.url}${urlParams}`, params);
-        
+
         fetch(`${body.url}${urlParams}`)
-        .then(response => {
-            return response.text();
-        })
-        .then((data) => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.send(err);
-        });        
+            .then(response => {
+                return response.text();
+            })
+            .then((data) => {
+                res.send(data);
+            })
+            .catch(err => {
+                res.send(err);
+            });
+    };
+    if (body.requestType === 'POST') {
+        params.method = body.requestType;
+        body.requestHeadersParams.length && body.requestHeadersParams.map((item) => {
+            if (item.key.length || item.value.length)
+                headersParams += `${item.key}:${item.value}, `;
+        });
+        //обрезает последний символ строки
+        if (body.requestHeadersParams.length) {
+            let updHeadersParams = headersParams.slice(0, -1);
+            params.headers = { updHeadersParams };
+        };
+        console.log('--body', body.body)
+        fetch(body.url, { method: 'POST', headers: headersParams, body: body.body })
+            .then((res) => {
+                return res.text();
+            })
+            .then((data) => {
+                console.log('--data', data)
+                res.send(data);
+            })
+            .catch(err => {
+                res.send(err);
+            });
     };
 });
 
@@ -81,7 +105,7 @@ router.get('/getHistoryList', async (req, res, next) => {
 
     fs.readFile(path.join(__dirname, '../files', 'historyList.json'), 'utf8', (err, data) => {
         if (err) throw err;
- 
+
         logLineAsync(logFN, `[${port}] ` + `historyList.json read`);
 
         let parsData = JSON.parse(data);
@@ -90,7 +114,7 @@ router.get('/getHistoryList', async (req, res, next) => {
         res.send(parsData);
 
         logLineAsync(logFN, `[${port}] ` + `historyList send`);
-      });
+    });
 });
 
 router.post('/addNewRequest', async (req, res, next) => {
@@ -112,7 +136,7 @@ router.post('/addNewRequest', async (req, res, next) => {
             if (err) throw err;
 
             logLineAsync(logFN, `[${port}] ` + `fileHistory.json updated`);
-            const answer= {
+            const answer = {
                 errorCode: 0,
                 errorDesription: 'Новые параметры добавлены'
             };
@@ -122,7 +146,7 @@ router.post('/addNewRequest', async (req, res, next) => {
     });
 });
 
-router.post('/deleteRequest', async (req, res, next) => { 
+router.post('/deleteRequest', async (req, res, next) => {
     const { body } = req;
 
     logLineAsync(logFN, `[${port}] ` + `service /api/deleteRequest called`);
@@ -136,12 +160,12 @@ router.post('/deleteRequest', async (req, res, next) => {
 
         const positiveArr = parsData.filter((item) => { return item.id != +deleteID });
         let jsonContent = JSON.stringify(positiveArr);
-    
+
         fs.writeFile(fileHistory, jsonContent, 'utf8', (err) => {
             if (err) throw err;
 
             logLineAsync(logFN, `[${port}] ` + `fileHistory.json updated`);
-            const answer= {
+            const answer = {
                 errorCode: 0,
                 errorDesription: 'Новые параметры добавлены'
             };

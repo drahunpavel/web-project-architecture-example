@@ -10,7 +10,7 @@ const initialState = {
 
     stateUrlParams: false,
     stateHeadersParams: false,
-    activeButtonParams: { fd: 'active', xwfu: '', r: '' },
+    activeButtonParams: { fd: '', xwfu: '', r: 'active' },
 
     historyList: []
 };

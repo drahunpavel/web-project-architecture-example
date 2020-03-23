@@ -59,7 +59,7 @@ class HistoryComponent extends PureComponent {
 
         let selectedRequest = find(historyList, (item, index) => { return index === +event.target.dataset.id });
         let deleteID = event.target.dataset.delete;
-        
+        console.log('--selectedRequest', selectedRequest)
         if(selectedRequest){
             setUrl(selectedRequest.url ? selectedRequest.url : '');
             setRequestType(selectedRequest.requestType ? selectedRequest.requestType : 'GET');
@@ -78,6 +78,18 @@ class HistoryComponent extends PureComponent {
                 setRequestHeadersParams([{ key: '', value: '' }]);
                 setStateHeadersParams(false);
             };
+
+            if(selectedRequest.requestType === 'POST'){
+                if(selectedRequest.type && selectedRequest.type === 'r'){
+                    setActiveButtonParams({ fd: '', xwfu: '', r: 'active' });
+                } 
+                if(selectedRequest.type && selectedRequest.type === 'xwfu'){
+                    setActiveButtonParams({ fd: '', xwfu: 'active', r: '' });
+                } 
+                if(selectedRequest.type && selectedRequest.type === 'fd'){
+                    setActiveButtonParams({ fd: 'active', xwfu: '', r: '' });
+                } 
+            }
         };
 
         if(deleteID && typeof selectedRequest === 'undefined'){
@@ -121,9 +133,9 @@ class HistoryComponent extends PureComponent {
                     <button onClick={this.getHistoryList} className="btn btn-primary" type="submit">History</button>
                     <button onClick={this.onClickClearAll} className="btn btn-danger" type="submit">Clear All</button>
                     <div className='list-wrapper'>
-                        {historyList.map((item, index) => 
+                        {historyList.map((item, index) =>
                             <h6 key={index} onClick={this.onHandleClick} data-id={item.id}>
-                                <span className="badge badge-warning" data-id={item.id}>{item.requestType}</span>
+                                <span className={(item.requestType === 'POST') ? 'badge badge-warning' : 'badge badge-success'} data-id={item.id}>{item.requestType}</span>
                                 <span data-id={item.id}>{item.url}</span>
                                 <span data-delete={item.id} className="badge badge-secondary">X</span>
                             </h6>
