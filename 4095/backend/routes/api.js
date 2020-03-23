@@ -99,9 +99,12 @@ router.post('/processRequest', async (req, res, next) => {
 
             fetch(body.url, { method: 'POST', headers: headersParams, body: body.body })
                 .then((res) => {
-                    return res.text();
+                    // console.log('--res', res)
+                    // return res.text();
+                    return res;
                 })
                 .then((data) => {
+                    // console.log('--data', data)
                     res.send(data);
                 })
                 .catch(err => {
