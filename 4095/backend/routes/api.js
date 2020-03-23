@@ -82,6 +82,7 @@ router.post('/processRequest', async (req, res, next) => {
         }
     };
     if (body.requestType === 'POST') {
+        console.log('--я тут', body.body, typeof body.body)
         params.method = body.requestType;
 
         var regex = /[-a-zA-Z0-9@:%_\+.~#?&\/=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/=]*)?/gi;
@@ -97,14 +98,13 @@ router.post('/processRequest', async (req, res, next) => {
                 params.headers = { updHeadersParams };
             };
 
-            fetch(body.url, { method: 'POST', headers: headersParams, body: body.body })
+            const dataBody = JSON.stringify(body.body);
+            
+            fetch(body.url, { method: 'POST', headers: headersParams, body: dataBody })
                 .then((res) => {
-                    // console.log('--res', res)
-                    // return res.text();
-                    return res;
+                    return res.text();
                 })
                 .then((data) => {
-                    // console.log('--data', data)
                     res.send(data);
                 })
                 .catch(err => {

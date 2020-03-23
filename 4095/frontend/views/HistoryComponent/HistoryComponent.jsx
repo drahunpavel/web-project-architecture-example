@@ -82,6 +82,7 @@ class HistoryComponent extends PureComponent {
             if(selectedRequest.requestType === 'POST'){
                 if(selectedRequest.type && selectedRequest.type === 'r'){
                     setActiveButtonParams({ fd: '', xwfu: '', r: 'active' });
+                    // setRawParams(JSON.stringify(selectedRequest.body));
                     setRawParams(selectedRequest.body);
                 } 
                 if(selectedRequest.type && selectedRequest.type === 'xwfu'){
