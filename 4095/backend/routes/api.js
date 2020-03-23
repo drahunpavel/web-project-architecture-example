@@ -46,56 +46,70 @@ router.post('/processRequest', async (req, res, next) => {
     let headersParams = '';
     if (body.requestType === 'GET') {
         params.method = body.requestType;
-        body.requestURLParams.length && body.requestURLParams.map((item) => {
-            if (item.key.length || item.value.length)
-                urlParams += `${item.key}=${item.value}&`
-        });
-        body.requestHeadersParams.length && body.requestHeadersParams.map((item) => {
-            if (item.key.length || item.value.length)
-                headersParams += `${item.key}:${item.value}, `;
-        });
-        //обрезает последний символ строки
-        if (body.requestHeadersParams.length) {
-            let updHeadersParams = headersParams.slice(0, -1);
-            params.headers = { updHeadersParams };
-        };
 
-        // const proxy_response = await fetch(`${body.url}${urlParams}`, params);
+        var regex = /[-a-zA-Z0-9@:%_\+.~#?&\/=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/=]*)?/gi;
+        //проверка на URL
+        if (regex.test(body.url)) {
 
-        fetch(`${body.url}${urlParams}`)
-            .then(response => {
-                return response.text();
-            })
-            .then((data) => {
-                res.send(data);
-            })
-            .catch(err => {
-                res.send(err);
+            body.requestURLParams.length && body.requestURLParams.map((item) => {
+                if (item.key.length || item.value.length)
+                    urlParams += `${item.key}=${item.value}&`
             });
+            body.requestHeadersParams.length && body.requestHeadersParams.map((item) => {
+                if (item.key.length || item.value.length)
+                    headersParams += `${item.key}:${item.value}, `;
+            });
+            //обрезает последний символ строки
+            if (body.requestHeadersParams.length) {
+                let updHeadersParams = headersParams.slice(0, -1);
+                params.headers = { updHeadersParams };
+            };
+
+            // const proxy_response = await fetch(`${body.url}${urlParams}`, params);
+
+            fetch(`${body.url}${urlParams}`)
+                .then(response => {
+                    return response.text();
+                })
+                .then((data) => {
+                    res.send(data);
+                })
+                .catch(err => {
+                    res.send(err);
+                });
+        } else {
+            res.send({ error: 'Проверьте введенный URL' });
+        }
     };
     if (body.requestType === 'POST') {
         params.method = body.requestType;
-        body.requestHeadersParams.length && body.requestHeadersParams.map((item) => {
-            if (item.key.length || item.value.length)
-                headersParams += `${item.key}:${item.value}, `;
-        });
-        //обрезает последний символ строки
-        if (body.requestHeadersParams.length) {
-            let updHeadersParams = headersParams.slice(0, -1);
-            params.headers = { updHeadersParams };
-        };
-        console.log('--body', body.body)
-        fetch(body.url, { method: 'POST', headers: headersParams, body: body.body })
-            .then((res) => {
-                return res.text();
-            })
-            .then((data) => {
-                console.log('--data', data)
-                res.send(data);
-            })
-            .catch(err => {
-                res.send(err);
+
+        var regex = /[-a-zA-Z0-9@:%_\+.~#?&\/=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/=]*)?/gi;
+        if (regex.test(body.url) && body.body.length != 0) {
+
+            body.requestHeadersParams.length && body.requestHeadersParams.map((item) => {
+                if (item.key.length || item.value.length)
+                    headersParams += `${item.key}:${item.value}, `;
             });
+            //обрезает последний символ строки
+            if (body.requestHeadersParams.length) {
+                let updHeadersParams = headersParams.slice(0, -1);
+                params.headers = { updHeadersParams };
+            };
+
+            fetch(body.url, { method: 'POST', headers: headersParams, body: body.body })
+                .then((res) => {
+                    return res.text();
+                })
+                .then((data) => {
+                    res.send(data);
+                })
+                .catch(err => {
+                    res.send(err);
+                });
+        } else {
+            res.send({ error: 'Проверьте введенный URL или тело запроса' });
+        }
     };
 });
 

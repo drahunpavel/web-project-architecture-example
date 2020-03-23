@@ -23,7 +23,7 @@ class MainComponent extends PureComponent {
   };
 
   sendRequest = (value) => {
-
+    console.log('--получили', value)
     const {
       setPreview,
       setHistoryList
@@ -50,26 +50,29 @@ class MainComponent extends PureComponent {
       par.requestURLParams = value.requestURLParams ? value.requestURLParams : [{ key: '', value: '' }];
       par.requestHeadersParams = value.requestHeadersParams ? value.requestHeadersParams : [{ key: '', value: '' }];
       par.type = value.type;
-      par.body = JSON.stringify(value.body);
+      par.body = value.body;
     }
 
-    API.addNewRequest(par).then((resolve, reject) => {
-      if (resolve) {
-        showNotification('success', '', 'service addNewRequest');
-
-        API.getHistoryList().then((resolve, reject) => {
-          if (resolve) {
-            setHistoryList(resolve.data);
-            showNotification('success', '', 'service getHistoryList');
-          } else {
-            showNotification('error', '', 'service getHistoryList');
-          }
-        });
-
-      } else {
-        showNotification('error', '', 'service addNewRequest')
-      }
-    });
+    var regex = /[-a-zA-Z0-9@:%_\+.~#?&\/=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/=]*)?/gi;
+    if(regex.test(value.url)){
+      API.addNewRequest(par).then((resolve, reject) => {
+        if (resolve) {
+          showNotification('success', '', 'service addNewRequest');
+  
+          API.getHistoryList().then((resolve, reject) => {
+            if (resolve) {
+              setHistoryList(resolve.data);
+              showNotification('success', '', 'service getHistoryList');
+            } else {
+              showNotification('error', '', 'service getHistoryList');
+            }
+          });
+  
+        } else {
+          showNotification('error', '', 'service addNewRequest')
+        }
+      });
+    }
   };
 
 

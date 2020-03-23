@@ -236,7 +236,7 @@ class DataInputComponent extends PureComponent {
                 newParams.requestType = requestType;
                 newParams.requestURLParams = requestURLParams;
                 newParams.requestHeadersParams = requestHeadersParams;
-                newParams.body = rawParams.length && JSON.parse(rawParams);
+                newParams.body = rawParams.length ? JSON.parse(rawParams) : '';
                 newParams.type = 'r';
 
                 cbSendRequest(newParams);
