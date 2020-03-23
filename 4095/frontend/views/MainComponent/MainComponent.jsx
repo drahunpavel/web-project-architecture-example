@@ -50,7 +50,7 @@ class MainComponent extends PureComponent {
       par.requestURLParams = value.requestURLParams ? value.requestURLParams : [{ key: '', value: '' }];
       par.requestHeadersParams = value.requestHeadersParams ? value.requestHeadersParams : [{ key: '', value: '' }];
       par.type = value.type;
-      par.body = value.body;
+      par.body = JSON.stringify(value.body);
     }
 
     var regex = /[-a-zA-Z0-9@:%_\+.~#?&\/=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/=]*)?/gi;
