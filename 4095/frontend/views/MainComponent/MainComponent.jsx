@@ -23,7 +23,7 @@ class MainComponent extends PureComponent {
   };
 
   sendRequest = (value) => {
-    console.log('-получили', value)
+
     const {
       setPreview,
       setHistoryList

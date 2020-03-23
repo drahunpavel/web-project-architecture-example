@@ -59,7 +59,7 @@ class HistoryComponent extends PureComponent {
 
         let selectedRequest = find(historyList, (item, index) => { return index === +event.target.dataset.id });
         let deleteID = event.target.dataset.delete;
-        console.log('--selectedRequest', selectedRequest)
+
         if(selectedRequest){
             setUrl(selectedRequest.url ? selectedRequest.url : '');
             setRequestType(selectedRequest.requestType ? selectedRequest.requestType : 'GET');
@@ -82,6 +82,7 @@ class HistoryComponent extends PureComponent {
             if(selectedRequest.requestType === 'POST'){
                 if(selectedRequest.type && selectedRequest.type === 'r'){
                     setActiveButtonParams({ fd: '', xwfu: '', r: 'active' });
+                    setRawParams(selectedRequest.body);
                 } 
                 if(selectedRequest.type && selectedRequest.type === 'xwfu'){
                     setActiveButtonParams({ fd: '', xwfu: 'active', r: '' });
