@@ -63,6 +63,7 @@ class HistoryComponent extends PureComponent {
         if(selectedRequest){
             setUrl(selectedRequest.url ? selectedRequest.url : '');
             setRequestType(selectedRequest.requestType ? selectedRequest.requestType : 'GET');
+            setPreview('');
             if(selectedRequest.requestURLParams && selectedRequest.requestURLParams.length){
                 setRequestURLParams(selectedRequest.requestURLParams);
                 setStateUrlParams(true);

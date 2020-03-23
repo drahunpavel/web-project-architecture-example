@@ -60,9 +60,18 @@ router.post('/processRequest', async (req, res, next) => {
             params.headers = {updHeadersParams};
         };
 
-        const proxy_response = await fetch(`${body.url}${urlParams}`, params);
-        const proxy_text = await proxy_response.text();
-        res.send(proxy_text);
+        // const proxy_response = await fetch(`${body.url}${urlParams}`, params);
+        
+        fetch(`${body.url}${urlParams}`)
+        .then(response => {
+            return response.text();
+        })
+        .then((data) => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.send(err);
+        });        
     };
 });
 

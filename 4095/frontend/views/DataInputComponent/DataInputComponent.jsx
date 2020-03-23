@@ -221,8 +221,10 @@ class DataInputComponent extends PureComponent {
             newParams.requestHeadersParams = requestHeadersParams;
             
             cbSendRequest(newParams);
-        }else{
-
+        }else if(requestType === 'POST'){
+            console.log('--url', url)
+            console.log('--rawParams', rawParams)
+            console.log('--requestHeadersParams', requestHeadersParams)
         };
     };
 
@@ -285,7 +287,7 @@ class DataInputComponent extends PureComponent {
                     <div className='request-modifiers'>
                         <p>Selected params</p>
                         <div className='modifiers'>
-                            <select onChange={this.handleChange} className="custom-select">
+                            <select value={requestType} onChange={this.handleChange} className="custom-select">
                                 <option value="GET">GET</option>
                                 <option value="POST">POST</option>
                             </select>
