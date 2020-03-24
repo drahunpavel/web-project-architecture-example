@@ -85,7 +85,7 @@ router.post('/processRequest', async (req, res, next) => {
                     res.send({data, headers:__headers, status: __status});
                 })
                 .catch(err => {
-                    res.send(err);
+                    res.send({data: err, headers:__headers, status: __status});
                 });
         } else {
             res.send({ error: 'Проверьте введенный URL' });
@@ -123,7 +123,7 @@ router.post('/processRequest', async (req, res, next) => {
                     res.send({data, headers:__headers, status: __status});
                 })
                 .catch(err => {
-                    res.send(err);
+                    res.send({data: err, headers:__headers, status: __status});
                 });
         } else {
             res.send({ error: 'Проверьте введенный URL или тело запроса' });
