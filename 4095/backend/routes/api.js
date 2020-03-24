@@ -88,7 +88,8 @@ router.post('/processRequest', async (req, res, next) => {
                     res.send({data: err, headers:__headers, status: __status});
                 });
         } else {
-            res.send({ error: 'Проверьте введенный URL' });
+            const data = {data:'Проверьте введенный URL'};
+            res.send(data);
         }
     };
     if (body.requestType === 'POST') {
@@ -126,7 +127,8 @@ router.post('/processRequest', async (req, res, next) => {
                     res.send({data: err, headers:__headers, status: __status});
                 });
         } else {
-            res.send({ error: 'Проверьте введенный URL или тело запроса' });
+            const data = {data:'Проверьте введенный URL или тело запроса'};
+            res.send(data);
         }
     };
 });
