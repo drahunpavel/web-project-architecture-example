@@ -10,6 +10,9 @@ const fileHistory = path.resolve(__dirname, '../files/historyList.json');
 
 const { logLineAsync } = require('../utils/utils');
 
+let __headers = {};
+let __status = {};
+
 router.get('/', (req, res) => {
 
     logLineAsync(logFN, `[${port}] ` + `visited /api, redirect to Home page`);
@@ -45,6 +48,7 @@ router.post('/processRequest', async (req, res, next) => {
     let urlParams = '?';
     let headersParams = '';
     if (body.requestType === 'GET') {
+        logLineAsync(logFN, `[${port}] ` + `requestType - GET`);
         params.method = body.requestType;
 
         var regex = /[-a-zA-Z0-9@:%_\+.~#?&\/=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/=]*)?/gi;
@@ -65,14 +69,20 @@ router.post('/processRequest', async (req, res, next) => {
                 params.headers = { updHeadersParams };
             };
 
-            // const proxy_response = await fetch(`${body.url}${urlParams}`, params);
+            // const proxy_response = await fetch(`${body.url}${urlParams}`);
+            // const proxy_text=await proxy_response.text();
+            // console.log('--proxy_text', proxy_text)
+
 
             fetch(`${body.url}${urlParams}`)
                 .then(response => {
-                    return response.text();
+                    const { status, headers: {_headers} }  = response;
+                    __headers = _headers;
+                    __status = status;
+                    return response.json();
                 })
                 .then((data) => {
-                    res.send(data);
+                    res.send({data, headers:__headers, status: __status});
                 })
                 .catch(err => {
                     res.send(err);
@@ -82,7 +92,7 @@ router.post('/processRequest', async (req, res, next) => {
         }
     };
     if (body.requestType === 'POST') {
-        console.log('--я тут', body.body, typeof body.body)
+        logLineAsync(logFN, `[${port}] ` + `requestType - POST`);
         params.method = body.requestType;
 
         var regex = /[-a-zA-Z0-9@:%_\+.~#?&\/=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/=]*)?/gi;
@@ -99,13 +109,18 @@ router.post('/processRequest', async (req, res, next) => {
             };
 
             const dataBody = JSON.stringify(body.body);
-            
+
             fetch(body.url, { method: 'POST', headers: headersParams, body: dataBody })
-                .then((res) => {
-                    return res.text();
+                .then((response) => {
+                    const { status, headers: {_headers} }  = response;
+                    __headers = _headers;
+                    __status = status;
+
+                    return response.json();
                 })
                 .then((data) => {
-                    res.send(data);
+
+                    res.send({data, headers:__headers, status: __status});
                 })
                 .catch(err => {
                     res.send(err);

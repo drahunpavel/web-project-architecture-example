@@ -12,12 +12,12 @@ class PreviewComponent extends PureComponent{
             <div className='PreviewComponent'>
                 <h6>
                     Status:
-                    <small className="text-muted">{preview.data && preview.status}</small>
+                    <small className="text-muted">{preview.data && preview.data.status}</small>
                 </h6>
                 head
-                <textarea className="form-control" value={preview && JSON.stringify(preview.config.headers)} rows="3"></textarea>
+                <textarea className="form-control" value={preview && JSON.stringify(preview.data.headers)} rows="3"></textarea>
                 body
-                <textarea className="form-control" value={preview && JSON.stringify(preview.data)} rows="6"></textarea>
+                <textarea className="form-control" value={preview && JSON.stringify(preview.data.data)} rows="6"></textarea>
             </div>
         );
     };
