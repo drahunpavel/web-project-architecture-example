@@ -8,8 +8,6 @@ const exphbs = require('express-handlebars');
 const webserver = express();
 
 //route
-// const home = require('./routes/home');
-// const API = require('./routes/api');
 const homeRouter = require('./routes/home');
 const showAll = require('./routes/showAll');
 
@@ -18,10 +16,7 @@ webserver.use(express.json()); // мидлварь, умеющая обраба�
 // webserver.use(multer({dest:"uploads"}).single("filedata"));
 const upload = multer({ dest: "uploads" });
 
-const { logLineAsync, getRandomFileName } = require('./utils/utils');
-
-const port = 5695;
-const logFN = path.join(__dirname, '_server.log'); //логирование
+const { logLineAsync, getRandomFileName, port, logFN } = require('./utils/utils');
 const allFilesArr = path.resolve(__dirname, './files/allFiles.json');
 
 //конфигураиця exphbs

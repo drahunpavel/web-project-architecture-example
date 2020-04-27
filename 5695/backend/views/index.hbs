@@ -1,3 +1,32 @@
 <h1>Home Page</h1>
 
-<p>I comprehend the basics of node.js</p>
+<form action="/upload" method="post" enctype="multipart/form-data" class="col s12">
+    <div class="input-field col s6">
+        <textarea id="comment" class="materialize-textarea" required min='5'></textarea>
+        <label for="comment">Comment</label>
+        <span class="helper-text" data-error="Entry сomment"></span>
+    </div>
+    <div class="file-field input-field col s6">
+        <div class="btn">
+            <span>File</span>
+            <input type="file">
+        </div>
+        <div class="file-path-wrapper">
+            <input class="file-path validate" type="text">
+        </div>
+    </div>
+    <br><br>
+    {{!-- <div class="input-field">
+        <input placeholder="" name="price" id="price" type="number" class="validate" required min='1'>
+        <label for="price">Price</label>
+        <span class="helper-text" data-error="Entry price"></span>
+    </div> --}}
+
+    {{!-- <div class="input-field">
+        <input placeholder="" name="img" id="img" type="text" class="validate" required>
+        <label for="img">URL</label>
+        <span class="helper-text" data-error="Entry URL"></span>
+    </div> --}}
+
+    <button class="btn btn-primary ">Send</button>
+</form>

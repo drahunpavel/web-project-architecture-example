@@ -79,7 +79,11 @@ function removeTags(str,replaceStr="") {
         str=str.replace(closingTagRE,replaceStr);
     }
     return str;
-}
+};
+
+const port = 5695;
+
+const logFN = path.join(__dirname, '_server.log'); //логирование
 
 module.exports={
     logLineSync,
@@ -87,4 +91,6 @@ module.exports={
     getTempFileName,
     getRandomFileName,
     removeTags,
+    port,
+    logFN
 };
