@@ -1,0 +1,14 @@
+<nav>
+    <div class="nav-wrapper">
+        <a href="#" class="brand-logo">App 5695</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+            {{#if isHome}} <li class="active"><a href="/">Home Page</a></li>
+            {{else}} <li ><a href="/">Home Page</a></li>
+            {{/if}}
+
+            {{#if isShowAll}} <li class="active"><a href="/showAll">All pictures</a></li>
+            {{else}} <li><a href="/showAll">All pictures</a></li>
+            {{/if}}
+        </ul>
+    </div>
+</nav>
