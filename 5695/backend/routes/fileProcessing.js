@@ -7,11 +7,9 @@ const router = Router();
 
 const { logLineAsync, port, getRandomFileName, logFN } = require('../utils/utils');
 
-router.post('/', busboy(), (req, res) => { 
-// router.post('/', (req, res) => { 
+const allFilesArr = path.resolve(__dirname, '../files/allFiles.json');
 
-    console.log('--body', req.busboy)
-    // var busboy = new Busboy({ headers: req.headers });
+router.post('/', busboy(), (req, res) => { 
 
     const totalRequestLength = +req.headers["content-length"]; // общая длина запроса
     let totalDownloaded = 0; // сколько байт уже получено
@@ -29,7 +27,6 @@ router.post('/', busboy(), (req, res) => {
 
     req.busboy.on('file', (fieldname, file, filename, mimetype) => {  // это событие возникает, когда в запросе обнаруживается файл
 
-        console.log('--filename', filename)
         if(filename.length) fileUploaded = true; //примитивная проверка на наличие файла
 
         const storedPFN = getRandomFileName(path.join(__dirname, "../uploads"));
@@ -39,7 +36,7 @@ router.post('/', busboy(), (req, res) => {
         console.log(`Uploading of '${filename}' started`);
 
         if(fileUploaded){
-            const fstream = fs.createWriteStream(storedPFN);
+            const fstream = fs.createWriteStream(storedPFN.path);
             file.pipe(fstream);
         };
 
@@ -49,6 +46,33 @@ router.post('/', busboy(), (req, res) => {
         });
 
         file.on('end', () => {
+            fs.readFile(path.join(__dirname, '../files', 'allFiles.json'), 'utf8', (err, data) => {
+                if (err) throw err;
+
+                let parsData = JSON.parse(data);
+                let newParams = {};
+                //обогащаю объект
+                newParams.id = parsData.length + 1;
+                newParams.comment = reqFields.comment;
+                newParams.filename = filename;
+                newParams.tmp_filename = storedPFN.name;
+
+                let obj = [...parsData, newParams];
+                let jsonContent = JSON.stringify(obj);
+    
+                fs.writeFile(allFilesArr, jsonContent, 'utf8', (err) => {
+                    if (err) throw err;
+    
+                    logLineAsync(logFN, `[${port}] ` + `added new entry to file allFiles.json`);
+                    // const answer = {
+                    //     errorCode: 0,
+                    //     errorDesription: 'Новые параметры добавлены'
+                    // };
+                    // res.setHeader("Content-Type", "application/json");
+                    // res.send(answer);
+                });
+            });
+
             console.log('file '+fieldname+' received');
         });
     });
