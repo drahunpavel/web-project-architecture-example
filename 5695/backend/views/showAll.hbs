@@ -1,12 +1,27 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Контакты</title>
-    <meta charset="utf-8" />
-</head>
-<body>
-    <h1>Контакты</h1>
-    <p>Электронный адрес: admin@mycorp.com</p>
-    {{test}}
-</body>
-<html>
+<h1>All Files</h1>
+
+<div class="row">
+    {{#if allFilesArr.length}}
+    {{#each allFilesArr}}
+    <div class="col s4">
+        <div class="card">
+            <div class="card-image">
+                {{!-- <img src="images/sample-1.jpg">
+                <span class="card-title">Card Title</span> --}}
+            </div>
+            <div class="card-content">
+            {{#if comment.length}}
+                <p>{{comment}}</p>
+            {{else}}
+                <p>No comment</p>
+            {{/if}}
+            </div>
+            <div class="card-action">
+                <a href="#">download</a>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+    {{else}} <p>No current files</p>
+    {{/if}}
+</div>

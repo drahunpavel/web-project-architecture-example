@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const {Router} = require('express');
 
 const router = Router();
@@ -8,11 +10,17 @@ router.get('/', (req, res, next) => {
 
     logLineAsync(logFN, `[${port}] ` + `visited Show All page`);
 
-    res.render('showAll', {
-        title: 'All pictures',
-        isShowAll: true,
-        test: 'тест'
-    })
+    fs.readFile(path.join(__dirname, '../files', 'allFiles.json'), 'utf8', (err, data) => {
+        if (err) throw err;
+
+        let parsData = JSON.parse(data);    
+
+        res.render('showAll', {
+            title: 'All pictures',
+            isShowAll: true,
+            allFilesArr: parsData
+        })
+    });
 });
 
 module.exports = router;
