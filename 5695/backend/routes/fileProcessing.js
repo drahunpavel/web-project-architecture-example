@@ -1,6 +1,10 @@
 const fs = require('fs');
 const path = require('path');
+const mime = require('mime');
 const busboy = require('connect-busboy');
+// import { find } from 'lodash';
+const filter = require('lodash');
+
 const {Router} = require('express');
 
 const router = Router();
@@ -9,7 +13,7 @@ const { logLineAsync, port, getRandomFileName, logFN } = require('../utils/utils
 
 const allFilesArr = path.resolve(__dirname, '../files/allFiles.json');
 
-router.post('/', busboy(), (req, res) => { 
+router.post('/upload', busboy(), (req, res) => { 
 
     const totalRequestLength = +req.headers["content-length"]; // общая длина запроса
     let totalDownloaded = 0; // сколько байт уже получено
@@ -90,7 +94,25 @@ router.post('/', busboy(), (req, res) => {
 });
 
 router.get('/:id/download', (req, res) => {
-    console.log('--req', req.params) 
-});
+    const { id } = req.params;
+
+    let file = path.resolve(__dirname, `../uploads/${id}`);
+
+    fs.readFile(path.join(__dirname, '../files', 'allFiles.json'), 'utf8', (err, data) => {
+        if (err) throw err;
+
+        let parsData = JSON.parse(data);
+        let actualFile = parsData.filter((item) => { return item.tmp_filename ===  id });
+        let mimetype = mime.lookup(file);
+
+        console.log('--actualFile', actualFile)
+
+        res.setHeader('Content-disposition', 'attachment; filename=' + actualFile.filename);
+        res.setHeader('Content-type', mimetype);
+
+        // let filestream = fs.createReadStream(file);
+        // filestream.pipe(res);
+    });
+}); 
 
 module.exports = router;

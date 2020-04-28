@@ -43,7 +43,7 @@ webserver.use((req, res, next) => {
 
 webserver.use('/', homeRouter);
 webserver.use('/showAll', showAll);
-webserver.use('/upload', processFile);
+webserver.use('/file', processFile);
 
 webserver.listen(port, () => {
     logLineAsync(logFN, `[${port}] ` + "web server is running");
