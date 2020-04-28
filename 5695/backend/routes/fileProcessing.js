@@ -57,6 +57,10 @@ router.post('/', busboy(), (req, res) => {
                 newParams.filename = filename;
                 newParams.tmp_filename = storedPFN.name;
 
+                let sliced = filename.slice(0,20);
+                if (sliced.length < filename.length) sliced += '...';
+                newParams.short_filename = sliced;
+
                 let obj = [...parsData, newParams];
                 let jsonContent = JSON.stringify(obj);
     

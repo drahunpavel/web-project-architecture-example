@@ -16,7 +16,6 @@ router.get('/', (req, res, next) => {
         let parsData = JSON.parse(data);    
 
         res.render('showAll', {
-            title: 'All pictures',
             isShowAll: true,
             allFilesArr: parsData
         })
