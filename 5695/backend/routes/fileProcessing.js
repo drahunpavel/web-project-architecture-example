@@ -89,4 +89,8 @@ router.post('/', busboy(), (req, res) => {
     });
 });
 
+router.get('/:id/download', (req, res) => {
+    console.log('--req', req.params) 
+});
+
 module.exports = router;
