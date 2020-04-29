@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const mime = require('mime');
 const busboy = require('connect-busboy');
-// import { find } from 'lodash';
 const filter = require('lodash');
 
 const {Router} = require('express');
@@ -26,18 +25,19 @@ router.post('/upload', busboy(), (req, res) => {
 
     req.busboy.on('field', function(fieldname, val) { // это событие возникает, когда в запросе обнаруживается "простое" поле, не файл
         reqFields[fieldname] = val;
-        console.log('--поле', fieldname, val)
     });
 
     req.busboy.on('file', (fieldname, file, filename, mimetype) => {  // это событие возникает, когда в запросе обнаруживается файл
 
         if(filename.length) fileUploaded = true; //примитивная проверка на наличие файла
 
-        const storedPFN = getRandomFileName(path.join(__dirname, "../uploads"));
-
+        const storedPFN = getRandomFileName(path.join(__dirname, "../uploads"));//todo удалить
         reqFiles[fieldname]={originalFN:filename,storedPFN:storedPFN};
 
         console.log(`Uploading of '${filename}' started`);
+
+        let randNameArr = reqFiles.filedata.storedPFN.path.split('\\');
+        let randName = randNameArr[randNameArr.length - 1];
 
         if(fileUploaded){
             const fstream = fs.createWriteStream(storedPFN.path);
@@ -59,7 +59,7 @@ router.post('/upload', busboy(), (req, res) => {
                 newParams.id = parsData.length + 1;
                 newParams.comment = reqFields.comment;
                 newParams.filename = filename;
-                newParams.tmp_filename = storedPFN.name;
+                newParams.tmp_filename = randName;
 
                 let sliced = filename.slice(0,20);
                 if (sliced.length < filename.length) sliced += '...';
@@ -105,13 +105,11 @@ router.get('/:id/download', (req, res) => {
         let actualFile = parsData.filter((item) => { return item.tmp_filename ===  id });
         let mimetype = mime.lookup(file);
 
-        console.log('--actualFile', actualFile)
-
-        res.setHeader('Content-disposition', 'attachment; filename=' + actualFile.filename);
+        res.setHeader('Content-disposition', 'attachment; filename=' + actualFile[0].filename);
         res.setHeader('Content-type', mimetype);
 
-        // let filestream = fs.createReadStream(file);
-        // filestream.pipe(res);
+        let filestream = fs.createReadStream(file);
+        filestream.pipe(res);
     });
 }); 
 
