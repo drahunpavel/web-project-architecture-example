@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const mime = require('mime');
 const busboy = require('connect-busboy');
-const filter = require('lodash');
+
 
 const {Router} = require('express');
 
@@ -35,6 +35,7 @@ router.post('/upload', busboy(), (req, res) => {
         reqFiles[fieldname]={originalFN:filename,storedPFN:storedPFN};
 
         console.log(`Uploading of '${filename}' started`);
+        logLineAsync(logFN, `[${port}] ` + `uploading of '${filename}' started`);
 
         let randNameArr = reqFiles.filedata.storedPFN.path.split('\\');
         let randName = randNameArr[randNameArr.length - 1];
@@ -47,6 +48,7 @@ router.post('/upload', busboy(), (req, res) => {
         file.on('data', function(data) {
             totalDownloaded += data.length;
             console.log('loaded '+totalDownloaded+' bytes of '+totalRequestLength);
+            logLineAsync(logFN, `[${port}] ` + 'loaded '+totalDownloaded+' bytes of '+totalRequestLength);
         });
 
         file.on('end', () => {
@@ -105,8 +107,13 @@ router.get('/:id/download', (req, res) => {
         let actualFile = parsData.filter((item) => { return item.tmp_filename ===  id });
         let mimetype = mime.lookup(file);
 
-        res.setHeader('Content-disposition', 'attachment; filename=' + actualFile[0].filename);
+        //кодировка, для скачивания файлов на кириллице
+        let newFileName = encodeURIComponent(actualFile[0].filename);
+
+        res.setHeader('Content-disposition', 'attachment; filename=' + newFileName);
         res.setHeader('Content-type', mimetype);
+
+        logLineAsync(logFN, `[${port}] ` + `file ${actualFile[0].filename} uploaded`);
 
         let filestream = fs.createReadStream(file);
         filestream.pipe(res);

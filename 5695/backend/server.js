@@ -1,8 +1,6 @@
 const express = require('express');
-const multer = require("multer");
-const fs = require('fs');
+// const multer = require("multer");
 const path = require('path');
-const busboy = require('connect-busboy');
 const exphbs = require('express-handlebars');
 
 const webserver = express();
@@ -15,7 +13,7 @@ const processFile = require('./routes/fileProcessing');
 webserver.use(express.static('public'));
 webserver.use(express.json()); // мидлварь, умеющая обрабатывать тело запроса в формате JSON
 // webserver.use(multer({dest:"uploads"}).single("filedata"));
-const upload = multer({ dest: "uploads" });
+// const upload = multer({ dest: "uploads" });
 
 const { logLineAsync, getRandomFileName, port, logFN } = require('./utils/utils');
 const allFilesArr = path.resolve(__dirname, './files/allFiles.json');
