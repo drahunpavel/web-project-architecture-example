@@ -31,33 +31,27 @@ wss_server.on('connection', (ws) => {
         };
     });
 
-    clients.push( { connection:ws, lastkeepalive:Date.now() } );
+    clients.push({ connection: ws, lastkeepalive: Date.now() });
 });
 
-setInterval(()=>{
-    timer++;
-    clients.forEach( client => {
 
-        if ( (Date.now()-client.lastkeepalive)>12000 ) {
-            client.connection.terminate(); // если клиент уже давно не отчитывался что жив - закрываем соединение
-            client.connection=null;
-            logLineAsync(logFN,`[${port}] `+"один из клиентов отключился, закрываем соединение с ним");
-        }
-        else
-            client.connection.send('from server ' + Date.now()); //клиент жив
-    } );
-
-    clients=clients.filter( client => client.connection ); // оставляем в clients только живые соединения
-},3000);
 
 router.post('/upload', busboy(), (req, res) => {
 
-    // wss_server.on('connection', (ws) => {
-    //     ws.on('message', (message) => {
-    //         console.log(`Received message => ${message}`)
-    //     })
-    //     ws.send('send file!')
-    // });
+    // setInterval(()=>{
+    //     clients.forEach( client => {
+
+    //         if ( (Date.now()-client.lastkeepalive)>12000 ) {
+    //             client.connection.terminate(); // если клиент уже давно не отчитывался что жив - закрываем соединение
+    //             client.connection=null;
+    //             logLineAsync(logFN,`[${port}] `+"один из клиентов отключился, закрываем соединение с ним");
+    //         }
+    //         else
+    //             client.connection.send('from server ' + Date.now()); //клиент жив
+    //     } );
+
+    //     clients=clients.filter( client => client.connection ); // оставляем в clients только живые соединения
+    // },1000);
 
 
     const totalRequestLength = +req.headers["content-length"]; // общая длина запроса
@@ -93,9 +87,20 @@ router.post('/upload', busboy(), (req, res) => {
 
         file.on('data', function (data) {
             totalDownloaded += data.length;
-            console.log('loaded ' + totalDownloaded + ' bytes of ' + totalRequestLength);
+            // console.log('loaded ' + totalDownloaded + ' bytes of ' + totalRequestLength);
 
+            clients.forEach(client => {
 
+                if ((Date.now() - client.lastkeepalive) > 12000) {
+                    client.connection.terminate(); // если клиент уже давно не отчитывался что жив - закрываем соединение
+                    client.connection = null;
+                    logLineAsync(logFN, `[${port}] ` + "один из клиентов отключился, закрываем соединение с ним");
+                }
+                else
+                    client.connection.send('total:' + totalDownloaded + '/' + totalRequestLength); //клиент жив
+            });
+
+            clients = clients.filter(client => client.connection); // оставляем в clients только живые соединения
 
             logLineAsync(logFN, `[${port}] ` + 'loaded ' + totalDownloaded + ' bytes of ' + totalRequestLength);
         });
