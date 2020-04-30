@@ -1,5 +1,37 @@
 <h1>Home Page</h1>
 
+{{!-- вынести в отдельный файл --}}
+<script>
+
+    const url = `ws://${window.location.hostname}:5696`;
+    const connection = new WebSocket(url)
+
+    connection.onopen = () => { // можно послать строку, Blob или ArrayBuffer 
+        connection.send('hey')
+    };
+
+    connection.onmessage = (e) => { // это сработает, когда сервер пришлёт какое-либо сообщение
+        console.log('message is received: ', e.data)
+    };
+
+    connection.onerror = (error) => {
+        connection = null;
+        console.log(`WebSocket error: ${error}`)
+    };
+
+    connection.onclose = () => {
+        console.log("соединение с сервером закрыто");
+        connection = null;
+        clearInterval(keepAliveTimer);
+    };
+
+    // чтобы сервер знал, что этот клиент ещё жив, будем регулярно слать ему сообщение "я жив"
+    let keepAliveTimer = setInterval(() => {
+        connection.send('KEEP_ME_ALIVE');
+    }, 5000);
+
+</script>
+
 <form action="/file/upload" method="post" enctype="multipart/form-data" class="col s12">
     <div class="file-field input-field col s6">
         <div class="btn">

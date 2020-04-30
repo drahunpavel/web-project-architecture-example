@@ -29,6 +29,7 @@ webserver.engine('hbs', hbs.engine);//подключение движка к э�
 webserver.set('view engine', 'hbs') //начинаем использовать
 webserver.set('views', 'views')//вторая views - это папка с html
 
+webserver.use( express.static(path.resolve(__dirname, "./src")));
 //cors
 webserver.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
