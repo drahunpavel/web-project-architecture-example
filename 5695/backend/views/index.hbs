@@ -19,7 +19,8 @@
 
         if (result) {
             let strArr = e.data.split(':');
-            let str = strArr[1];
+            let resultArr = strArr[1].split('/');
+            let str = `<b>Loaded ' + ${resultArr[0]} + ' bytes of ' +  ${resultArr[1]}</b>`;
 
             element.innerHTML = str;
             showLoad = true;

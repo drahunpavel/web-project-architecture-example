@@ -16,7 +16,6 @@ webserver.use(express.json()); // мидлварь, умеющая обраба�
 // const upload = multer({ dest: "uploads" });
 
 const { logLineAsync, getRandomFileName, port, logFN } = require('./utils/utils');
-const allFilesArr = path.resolve(__dirname, './files/allFiles.json');
 
 //конфигураиця exphbs
 const hbs = exphbs.create({

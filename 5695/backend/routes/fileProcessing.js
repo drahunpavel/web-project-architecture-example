@@ -3,18 +3,17 @@ const path = require('path');
 const mime = require('mime');
 const busboy = require('connect-busboy');
 const WebSocket = require('ws');
-
+   
 const { Router } = require('express');
-
 const router = Router();
 
 const { logLineAsync, port, getRandomFileName, logFN } = require('../utils/utils');
-
 const allFilesArr = path.resolve(__dirname, '../files/allFiles.json');
 
 const wss_server = new WebSocket.Server({ port: 5696 }); // создаём сокет-сервер на порту 5696
 
 let clients = []; // здесь будут хэши вида { connection:, lastkeepalive:NNN }
+let fileUploaded = false; //состояние загрузки файла
 
 wss_server.on('connection', (ws) => {
 
@@ -38,26 +37,10 @@ wss_server.on('connection', (ws) => {
 
 router.post('/upload', busboy(), (req, res) => {
 
-    // setInterval(()=>{
-    //     clients.forEach( client => {
-
-    //         if ( (Date.now()-client.lastkeepalive)>12000 ) {
-    //             client.connection.terminate(); // если клиент уже давно не отчитывался что жив - закрываем соединение
-    //             client.connection=null;
-    //             logLineAsync(logFN,`[${port}] `+"один из клиентов отключился, закрываем соединение с ним");
-    //         }
-    //         else
-    //             client.connection.send('from server ' + Date.now()); //клиент жив
-    //     } );
-
-    //     clients=clients.filter( client => client.connection ); // оставляем в clients только живые соединения
-    // },1000);
-
-
     const totalRequestLength = +req.headers["content-length"]; // общая длина запроса
     let totalDownloaded = 0; // сколько байт уже получено
 
-    let fileUploaded = false; // состояние загрузки файла
+    // let fileUploaded = false; // состояние загрузки файла
     let reqFields = {}; // информация обо всех полях запроса, кроме файлов
     let reqFiles = {}; // информация обо всех файлах
 
@@ -128,12 +111,6 @@ router.post('/upload', busboy(), (req, res) => {
                     if (err) throw err;
 
                     logLineAsync(logFN, `[${port}] ` + `added new entry to file allFiles.json`);
-                    // const answer = {
-                    //     errorCode: 0,
-                    //     errorDesription: 'Новые параметры добавлены'
-                    // };
-                    // res.setHeader("Content-Type", "application/json");
-                    // res.send(answer);
                 });
             });
 
@@ -146,6 +123,15 @@ router.post('/upload', busboy(), (req, res) => {
         res.render('addFile', {
             isFileUploaded: fileUploaded
         });
+    });
+});
+
+router.get('/addFile', (req, res, next) => {
+
+    logLineAsync(logFN, `[${port}] ` + `redirect AddFile page`);
+
+    res.render('addFile', {
+        isFileUploaded: fileUploaded
     });
 });
 
