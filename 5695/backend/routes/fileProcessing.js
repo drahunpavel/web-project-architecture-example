@@ -120,9 +120,7 @@ router.post('/upload', busboy(), (req, res) => {
 
     req.busboy.on('finish', async () => {
 
-        res.render('addFile', {
-            isFileUploaded: fileUploaded
-        });
+        res.redirect('/file/addFile');
     });
 });
 
