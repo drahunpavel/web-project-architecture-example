@@ -3,7 +3,7 @@ const path = require('path');
 const mime = require('mime');
 const busboy = require('connect-busboy');
 const WebSocket = require('ws');
-   
+
 const { Router } = require('express');
 const router = Router();
 
@@ -15,114 +15,120 @@ const wss_server = new WebSocket.Server({ port: 5696 }); // создаём со�
 let clients = []; // здесь будут хэши вида { connection:, lastkeepalive:NNN }
 let fileUploaded = false; //состояние загрузки файла
 
+
 wss_server.on('connection', (ws) => {
 
-    ws.send('hello from server ' + Date.now()); // это сообщение будет отослано сервером каждому присоединившемуся клиенту
+    router.post('/upload', busboy(), (req, res) => {
 
-    ws.on('message', (message) => {
-        if (message === "KEEP_ME_ALIVE") {
-            clients.forEach(client => {
-                if (client.connection === ws)
-                    client.lastkeepalive = Date.now();
-            });
-        } else {
-            console.log(`Received message => ${message}`) // получем от клиента сообщение
-        };
-    });
+        ws.send('hello from server ' + Date.now()); // это сообщение будет отослано сервером каждому присоединившемуся клиенту
 
-    clients.push({ connection: ws, lastkeepalive: Date.now() });
-});
+        const totalRequestLength = +req.headers["content-length"]; // общая длина запроса
+        let totalDownloaded = 0; // сколько байт уже получено
 
+        let reqFields = {}; // информация обо всех полях запроса, кроме файлов
+        let reqFiles = {}; // информация обо всех файлах
 
+        req.pipe(req.busboy); // перенаправляем поток приёма ответа в busboy
 
-router.post('/upload', busboy(), (req, res) => {
-
-    const totalRequestLength = +req.headers["content-length"]; // общая длина запроса
-    let totalDownloaded = 0; // сколько байт уже получено
-
-    // let fileUploaded = false; // состояние загрузки файла
-    let reqFields = {}; // информация обо всех полях запроса, кроме файлов
-    let reqFiles = {}; // информация обо всех файлах
-
-    req.pipe(req.busboy); // перенаправляем поток приёма ответа в busboy
-
-    req.busboy.on('field', function (fieldname, val) { // это событие возникает, когда в запросе обнаруживается "простое" поле, не файл
-        reqFields[fieldname] = val;
-    });
-
-    req.busboy.on('file', (fieldname, file, filename, mimetype) => {  // это событие возникает, когда в запросе обнаруживается файл
-
-        if (filename.length) fileUploaded = true; //примитивная проверка на наличие файла
-
-        const storedPFN = getRandomFileName(path.join(__dirname, "../uploads"));//todo удалить
-        reqFiles[fieldname] = { originalFN: filename, storedPFN: storedPFN };
-
-        console.log(`Uploading of '${filename}' started`);
-        logLineAsync(logFN, `[${port}] ` + `uploading of '${filename}' started`);
-
-        let randNameArr = reqFiles.filedata.storedPFN.path.split('\\');
-        let randName = randNameArr[randNameArr.length - 1];
-
-        if (fileUploaded) {
-            const fstream = fs.createWriteStream(storedPFN.path);
-            file.pipe(fstream);
-        };
-
-        file.on('data', function (data) {
-            totalDownloaded += data.length;
-            // console.log('loaded ' + totalDownloaded + ' bytes of ' + totalRequestLength);
-
-            clients.forEach(client => {
-
-                if ((Date.now() - client.lastkeepalive) > 12000) {
-                    client.connection.terminate(); // если клиент уже давно не отчитывался что жив - закрываем соединение
-                    client.connection = null;
-                    logLineAsync(logFN, `[${port}] ` + "один из клиентов отключился, закрываем соединение с ним");
-                }
-                else
-                    client.connection.send('total:' + totalDownloaded + '/' + totalRequestLength); //клиент жив
-            });
-
-            clients = clients.filter(client => client.connection); // оставляем в clients только живые соединения
-
-            logLineAsync(logFN, `[${port}] ` + 'loaded ' + totalDownloaded + ' bytes of ' + totalRequestLength);
+        req.busboy.on('field', function (fieldname, val) { // это событие возникает, когда в запросе обнаруживается "простое" поле, не файл
+            reqFields[fieldname] = val;
         });
 
-        file.on('end', () => {
-            fs.readFile(path.join(__dirname, '../files', 'allFiles.json'), 'utf8', (err, data) => {
-                if (err) throw err;
+        req.busboy.on('file', (fieldname, file, filename, mimetype) => {  // это событие возникает, когда в запросе обнаруживается файл
 
-                let parsData = JSON.parse(data);
-                let newParams = {};
-                //обогащаю объект
-                newParams.id = parsData.length + 1;
-                newParams.comment = reqFields.comment;
-                newParams.filename = filename;
-                newParams.tmp_filename = randName;
+            if (filename.length) { //примитивная проверка на наличие файла
 
-                let sliced = filename.slice(0, 20);
-                if (sliced.length < filename.length) sliced += '...';
-                newParams.short_filename = sliced;
+                ws.on('message', (message) => {
+                    if (message === "KEEP_ME_ALIVE") {
+                        clients.forEach(client => {
+                            if (client.connection === ws) {
+                                client.lastkeepalive = Date.now();
+                            };
+                        });
+                    } else {
+                        console.log(`Received message => ${message}`) // получем от клиента сообщение
+                    };
+                });
+                clients.push({ connection: ws, lastkeepalive: Date.now() });
 
-                let obj = [...parsData, newParams];
-                let jsonContent = JSON.stringify(obj);
+                fileUploaded = true;
+            };
 
-                fs.writeFile(allFilesArr, jsonContent, 'utf8', (err) => {
+            const storedPFN = getRandomFileName(path.join(__dirname, "../uploads"));//todo удалить
+            reqFiles[fieldname] = { originalFN: filename, storedPFN: storedPFN };
+
+            console.log(`Uploading of '${filename}' started`);
+            logLineAsync(logFN, `[${port}] ` + `uploading of '${filename}' started`);
+
+            let randNameArr = reqFiles.filedata.storedPFN.path.split('\\');
+            let randName = randNameArr[randNameArr.length - 1];
+
+            if (fileUploaded) {
+                const fstream = fs.createWriteStream(storedPFN.path);
+                file.pipe(fstream);
+            };
+
+            file.on('data', function (data) {
+                totalDownloaded += data.length;
+
+                clients.forEach((client, i) => {
+                    if ((Date.now() - client.lastkeepalive) > 3000) {
+                        client.connection.terminate(); // если клиент уже давно не отчитывался что жив - закрываем соединение
+                        client.connection = null;
+                        logLineAsync(logFN, `[${port}] ` + "один из клиентов отключился, закрываем соединение с ним");
+                    } else {
+                        client.connection.send('total:' + totalDownloaded + '/' + totalRequestLength); //клиент жив
+                    };
+                });
+
+                clients = clients.filter(client => client.connection); // оставляем в clients только живые соединения
+
+                // logLineAsync(logFN, `[${port}] ` + 'loaded ' + totalDownloaded + ' bytes of ' + totalRequestLength);
+            });
+
+            file.on('end', () => {
+                fs.readFile(path.join(__dirname, '../files', 'allFiles.json'), 'utf8', (err, data) => {
                     if (err) throw err;
 
-                    logLineAsync(logFN, `[${port}] ` + `added new entry to file allFiles.json`);
+                    let parsData = JSON.parse(data);
+                    let newParams = {};
+                    //обогащаю объект
+                    newParams.id = parsData.length + 1;
+                    newParams.comment = reqFields.comment;
+                    newParams.filename = filename;
+                    newParams.tmp_filename = randName;
+
+                    let sliced = filename.slice(0, 20);
+                    if (sliced.length < filename.length) sliced += '...';
+                    newParams.short_filename = sliced;
+
+                    let obj = [...parsData, newParams];
+                    let jsonContent = JSON.stringify(obj);
+
+                    fs.writeFile(allFilesArr, jsonContent, 'utf8', (err) => {
+                        if (err) throw err;
+
+                        logLineAsync(logFN, `[${port}] ` + `added new entry to file allFiles.json`);
+                    });
                 });
+
+                console.log('file ' + fieldname + ' received');
+            });
+        });
+
+        req.busboy.on('finish', async () => {
+
+            clients.forEach(client => {
+
+                client.connection.terminate(); // если клиент уже давно не отчитывался что жив - закрываем соединение
+                client.connection = null;
             });
 
-            console.log('file ' + fieldname + ' received');
+            res.redirect('/file/addFile');
         });
     });
-
-    req.busboy.on('finish', async () => {
-
-        res.redirect('/file/addFile');
-    });
 });
+
 
 router.get('/addFile', (req, res, next) => {
 
