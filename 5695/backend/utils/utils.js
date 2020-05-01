@@ -83,7 +83,7 @@ function removeTags(str,replaceStr="") {
 
 const port = 5695;
 
-const logFN = path.join(__dirname, '_server.log'); //логирование
+const logFN = path.join(__dirname, '../_server.log'); //логирование
 
 module.exports={
     logLineSync,
