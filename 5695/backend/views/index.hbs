@@ -18,14 +18,12 @@
         let element = document.getElementById('showResult');
 
         if (result) {
-            showLoad = true;
-
-
             let strArr = e.data.split(':');
             let resultArr = strArr[1].split('/');
             let str = `<b>Loaded '${resultArr[0]}' bytes of '${resultArr[1]}'</b>`;
 
             element.innerHTML = str;
+            showLoad = true;
         };;
     };
 
@@ -49,12 +47,8 @@
     // чтобы сервер знал, что этот клиент ещё жив, будем регулярно слать ему сообщение "я жив"
     let keepAliveTimer = setInterval(() => {
         connection.send('KEEP_ME_ALIVE');
-    }, 1000);
+    }, 5000);
 
-    function func(){
-        let elementProgress = document.getElementById('progress');
-        elementProgress.innerHTML = '<div class="indeterminate"></div>';
-    };
 </script>
 
 <form action="/file/upload" method="post" enctype="multipart/form-data" class="col s12">
@@ -73,8 +67,12 @@
         <span class="helper-text" data-error="Entry сomment"></span>
     </div>
     <div class="card-panel">
-        <div class="progress" id='progress'></div>
+        {{#if showLoad}}
+        <div class="progress">
+            <div class="indeterminate"></div>
+        </div>
+        {{/if}}
         <span id='showResult' class="cyan-text text-darken-4"><b>The file does not load</b></span>
     </div>
-    <input type="submit" class="btn btn-primary" value="Add new file" onclick="func()"/>
+    <input type="submit" class="btn btn-primary" value="Add new file" />
 </form>
