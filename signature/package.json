@@ -1,8 +1,8 @@
 {
-  "name": "5693",
+  "name": "4905",
   "version": "1.0.0",
   "description": "",
-  "main": "script.js",
+  "main": "server.js",
   "scripts": {
     "build:dev": "nodemon server.js"
   },
@@ -10,5 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.17.1"
   }
 }

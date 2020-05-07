@@ -1,0 +1,56 @@
+export const testContents = {
+    TitleTest: 'General Placement Test htmlFor Students',
+    DescriprionTest: 'Внимательно заполните все поля теста. Тест состоит из нескольких частей. Только ответив на одну часть, Вы сможете перейти к вопросам следующей части. Для перехода на следующую часть, ответы должны быть даны на все вопросы без исключения.',
+    questions: [
+        {
+            questionTitle: 'How much _____ where you live?',
+            questionDescriprion: '',
+            type: 'radioGroup',
+            id: 'testNumber2_Task1_radioGroup',
+            values: [
+               {
+                   value: 'test One',
+                   input: 'test One'
+                },
+                {
+                    value: 'test two',
+                    input: 'test two'
+                },  
+            ]
+        },
+        {
+            questionTitle: 'How much _____ this cup?',
+            questionDescriprion: '',
+            type: 'checkboxGroup',
+            id: 'testNumber2_Task2_checkboxGroup',
+            values: [
+                {
+                    value: 'testNumber2_Task2_checkboxGroup1',
+                    input: 'testNumber2_Task2_checkboxGroup1'
+                },
+                {
+                    value: 'testNumber2_Task2_checkboxGroup2',
+                    input: 'testNumber2_Task2_checkboxGroup2'
+                },
+                {
+                    value: 'testNumber2_Task2_checkboxGroup3',
+                    input: 'testNumber2_Task2_checkboxGroup3'
+                },
+            ]
+        },
+        {
+            questionTitle: 'Readle.',
+            questionDescriprion: 'I o be__________________________ at worf coffeethings I want to do.',
+            id: 'testNumber2_Task3_inputText',
+            type: 'inputText',
+        },
+    ]
+};
+
+//FIX
+//Здесь значения всех полей теста по умолчанию. Те id из testContents
+export const testContentsInitialValues = {
+    testNumber2_Task1_radioGroup: '',
+    testNumber2_Task2_checkboxGroup: [],
+    testNumber2_Task3_inputText: '',
+};
