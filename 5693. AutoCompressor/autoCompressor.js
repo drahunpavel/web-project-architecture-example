@@ -10,30 +10,34 @@ const {
 const { promisify } = require('util');
 const pipe = promisify(pipeline);
 
-
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-    prompt: 'Folder path: '
-});
-
 const FgGreen = "\x1b[32m";
 const FgYellow = "\x1b[33m";
 const FgBlue = "\x1b[34m";
+const BgRed = "\x1b[41m";
 
-const link = `D:\\Web\\web project architecture\\web-project-architecture-example\\5693. AutoCompressor`;
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
+rl.question('Entry path: ', async path => {
 
-const _path = './test';
+    readDir(path);
+});
 
+// readDir(_path)
+//     .then((res) => {
+//         console.log('--readDir is running, path: ', path);
+//     })
+//     .catch(err => { console.error(err); });
 
 //-----------------------------------------------------
 async function readDir(_path) {
+
     return new Promise((resolve, reject) => {
         fs.readdir(_path, (error, result) => {
             if (error) {
                 reject(error);
-                console.log('--error', error)
             } else {
 
                 result.forEach((fileName) => {
@@ -64,12 +68,13 @@ async function readDir(_path) {
                                         //если дата создания файл оригинала свежее сжатого файла
                                         //удаляется старый сжататый файл и созадется новый 
                                         if (compressedFilebirthtime >= originalFilebirthtime) {
-                                            console.log(FgGreen,'--compressed file is fine: ', fileName)
+                                            console.log(FgGreen, '--compressed file is fine: ', 'fileName: ', fileName, '     path: ', filePath)
+                                            
                                         } else {
                                             fs.unlink(`${filePath}.gz`, (err) => {
                                                 if (err) throw err;
 
-                                                console.log('--old compressed file deleted: ', fileName);
+                                                console.log(BgRed, '--old compressed file deleted: ', 'fileName: ', fileName, '     path: ', filePath);
 
                                                 do_gzip(filePath, `${filePath}.gz`, fileName)
                                                     .catch((err) => {
@@ -80,7 +85,7 @@ async function readDir(_path) {
                                         };
                                     });
                                 } else {
-                                    console.log(FgBlue, '--file doesn`t have a compressed version: ', fileName);
+                                    console.log(FgBlue, '--file doesn`t have a compressed version: ', 'fileName: ', fileName, '     path: ', filePath);
 
                                     do_gzip(filePath, `${filePath}.gz`, fileName)
                                         .catch((err) => {
@@ -95,23 +100,16 @@ async function readDir(_path) {
                         };
                     });
                 });
-                resolve(result)
+                resolve(result);
             }
         });
     });
 };
 
-readDir(_path)
-    .then((res) => {
-        console.log('--readDir is running');
-    })
-    .catch(err => { console.error(err); })
-
-
 //Compression function
 async function do_gzip(input, output, fileName) {
 
-    console.log(FgYellow, '--create new compressed file: ', 'fileName: ', fileName, 'path: ', input);
+    console.log(FgYellow, '--create new compressed file: ', 'fileName: ', fileName, '     path: ', input);
 
     const gzip = createGzip();
     const source = createReadStream(input);
