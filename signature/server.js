@@ -19,7 +19,7 @@ webserver.use((req, res, next) => {
     next();
 });
 
-router.get('/', (req, res, next) => {
+webserver.get('/', (req, res, next) => {
     fs.readFile(path.join(__dirname, 'public', 'index.html'), 'utf-8', (err, content) => {
         if (err) throw err;
 
@@ -28,4 +28,5 @@ router.get('/', (req, res, next) => {
 });
 
 webserver.listen(port, () => {
+    console.log('--I run')
 });
