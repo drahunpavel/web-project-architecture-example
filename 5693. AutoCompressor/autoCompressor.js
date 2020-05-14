@@ -38,47 +38,36 @@ async function readDir(_path) {
         const stats = await fsp.stat(filePath); //данные по файлу
 
         if (stats.isFile()) {
-
-            let originalFilebirthtime;
-            let compressedFilebirthtime;
             let brokenFile = fileName.split('.');
 
             //не сжатые файлы
             if (brokenFile[brokenFile.length - 1] != 'gz') {
+                let isCompressedFile = listDir.find(item => item === `${fileName}.gz`);//поиск сжатого файла
 
-                let сompressedFile = listDir.find(item => item === `${fileName}.gz`);//поиск сжатого файла
-                originalFilebirthtime = stats.birthtimeMs; //дата создания файла оригинала
+                //если сжатый файл найден
+                //нужно его проверить
+                if (isCompressedFile) {
+                    let statsСompressed = await fsp.stat(filePath); //данные по сжатому файлу
+                    let compressedFilebirthtime = statsСompressed.birthtimeMs; //дата создания сжатого файла
+                    // let originalFilebirthtime = stats.birthtimeMs; //дата создания файла оригинала
+                    let originalmtimeMs = stats.mtimeMs; //дата последнего изменений файла оригинала
+                    // let originalmtimeMs = stats.ctimeMs; //дата последнего обращения
+                    if(originalmtimeMs > compressedFilebirthtime){
 
-                if (сompressedFile) {
-
-                    //получает данные по сжатому файлу
-                    fs.stat(`${filePath}.gz`, сompressedFile, (err, stat) => {
-                        compressedFilebirthtime = stat.birthtimeMs; //дата создания сжатого файла
-
-                        //проверка даты создания файла оригинала и сжататого файла
-                        //если дата создания файл оригинала свежее сжатого файла
-                        //удаляется старый сжататый файл и созадется новый 
-                        if (compressedFilebirthtime >= originalFilebirthtime) {
-                            console.log(FgGreen, '--compressed file is fine: ', 'fileName: ', fileName, '     path: ', filePath);
-                        } else {
-                            fs.unlink(`${filePath}.gz`, (err) => {
-                                if (err) throw err;
-
-                                console.log(BgRed, '--old compressed file deleted: ', 'fileName: ', fileName, '     path: ', filePath);
-
-                                do_gzip(filePath, `${filePath}.gz`, fileName)
-                                    // .then((res) => {
-                                    //     console.log(BgCyan, '--compressed file created: ', 'fileName: ', fileName, '     path: ', `${filePath}.gz`);
-                                    // })
-                                    .catch((err) => {
-                                        console.error('An error occurred:', err);
-                                        process.exitCode = 1;
-                                    });
-                            });
-                        };
-                    });
-                } else {
-                    console.log(FgBlue, '--file doesn`t have a compressed version: ', 'fileName: ', fileName, '     path: ', filePath);
+                        console.log(FgBlue, '--the compressed file is out of date, you need to replace: ', 'fileName: ', fileName, '     path: ', filePath);
+                        await do_gzip(filePath, `${filePath}.gz`, fileName)
+                        // .then((res) => {
+                        //     console.log(BgCyan, '--compressed file created: ', 'fileName: ', fileName, '     path: ', `${filePath}.gz`);
+                        // })
+                        .catch((err) => {
+                            console.error('An error occurred:', err);
+                            process.exitCode = 1;
+                        });
+                    }else{
+                        console.log(FgGreen, '--compressed file is fine: ', 'fileName: ', fileName, '     path: ', filePath);
+                    };
+                } else {//иначе этот сжатый файл нужно создать
+                    console.log(FgGreen, '--file doesn`t have a compressed version: ', 'fileName: ', fileName, '     path: ', filePath);
 
                     await do_gzip(filePath, `${filePath}.gz`, fileName)
                         // .then((res) => {
@@ -113,12 +102,12 @@ function readdirAsync(path) {
 //Compression function
 async function do_gzip(input, output, fileName) {
 
-    console.log(FgYellow, '--create new compressed file: ', 'fileName: ', fileName, '     path: ', `${input}.gz`);
+    console.log(FgYellow, '--create new compressed file: ', 'fileName: ', `${fileName}.gz`, '     path: ', `${input}.gz`);
 
     const gzip = createGzip();
     const source = createReadStream(input);
     const destination = createWriteStream(output);
     await pipe(source, gzip, destination);
 
-    console.log(FgYellow, '--compressed file created: ', 'fileName: ', fileName, '     path: ', `${input}.gz`);
+    console.log(FgYellow, '--compressed file created: ', 'fileName: ', `${fileName}.gz`, '     path: ', `${input}.gz`);
 };
