@@ -14,8 +14,9 @@ const pipe = promisify(pipeline);
 const FgGreen = "\x1b[32m";
 const FgYellow = "\x1b[33m";
 const FgBlue = "\x1b[34m";
-const BgRed = "\x1b[41m";
-
+const FgRed = "\x1b[31m";
+const FgMagenta = "\x1b[35m";
+const FgCyan = "\x1b[36m"
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -42,32 +43,40 @@ async function readDir(_path) {
 
             //не сжатые файлы
             if (brokenFile[brokenFile.length - 1] != 'gz') {
-                let isCompressedFile = listDir.find(item => item === `${fileName}.gz`);//поиск сжатого файла
+                let compressedFile = listDir.find(item => item === `${fileName}.gz`);//поиск сжатого файла
 
                 //если сжатый файл найден
                 //нужно его проверить
-                if (isCompressedFile) {
-                    let statsСompressed = await fsp.stat(filePath); //данные по сжатому файлу
+                if (compressedFile) {
+                    let statsСompressed = await fsp.stat(`${filePath}.gz`); //данные по сжатому файлу
+
                     let compressedFilebirthtime = statsСompressed.birthtimeMs; //дата создания сжатого файла
                     // let originalFilebirthtime = stats.birthtimeMs; //дата создания файла оригинала
                     let originalmtimeMs = stats.mtimeMs; //дата последнего изменений файла оригинала
                     // let originalmtimeMs = stats.ctimeMs; //дата последнего обращения
+
                     if(originalmtimeMs > compressedFilebirthtime){
 
                         console.log(FgBlue, '--the compressed file is out of date, you need to replace: ', 'fileName: ', fileName, '     path: ', filePath);
-                        await do_gzip(filePath, `${filePath}.gz`, fileName)
-                        // .then((res) => {
-                        //     console.log(BgCyan, '--compressed file created: ', 'fileName: ', fileName, '     path: ', `${filePath}.gz`);
-                        // })
-                        .catch((err) => {
-                            console.error('An error occurred:', err);
-                            process.exitCode = 1;
-                        });
+
+                        let deleteStatus = await asyncDeleteFile(filePath, fileName);
+
+                        if(deleteStatus) {
+                            await do_gzip(filePath, `${filePath}.gz`, fileName)
+                            // .then((res) => {
+                            //     console.log(BgCyan, '--compressed file created: ', 'fileName: ', fileName, '     path: ', `${filePath}.gz`);
+                            // })
+                            .catch((err) => {
+                                console.error('An error occurred:', err);
+                                process.exitCode = 1;
+                            });
+                        }
+
                     }else{
                         console.log(FgGreen, '--compressed file is fine: ', 'fileName: ', fileName, '     path: ', filePath);
                     };
                 } else {//иначе этот сжатый файл нужно создать
-                    console.log(FgGreen, '--file doesn`t have a compressed version: ', 'fileName: ', fileName, '     path: ', filePath);
+                    console.log(FgMagenta, '--file doesn`t have a compressed version: ', 'fileName: ', fileName, '     path: ', filePath);
 
                     await do_gzip(filePath, `${filePath}.gz`, fileName)
                         // .then((res) => {
@@ -99,6 +108,20 @@ function readdirAsync(path) {
     });
 };
 
+function asyncDeleteFile(filePath, fileName){
+
+    return new Promise(function (resolve, reject) {
+        fs.unlink(`${filePath}.gz`, (err, res) => {
+            if (err) {
+                reject(err)
+            }else{
+                console.log(FgRed, '--old compressed file deleted: ', `${filePath}.gz`);
+                resolve(true);
+            }
+        });
+    });
+};
+
 //Compression function
 async function do_gzip(input, output, fileName) {
 
@@ -111,3 +134,4 @@ async function do_gzip(input, output, fileName) {
 
     console.log(FgYellow, '--compressed file created: ', 'fileName: ', `${fileName}.gz`, '     path: ', `${input}.gz`);
 };
+
