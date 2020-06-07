@@ -1,0 +1,40 @@
+// @import "material-ui/main";
+
+@import "./node_modules/material-ui-sass/material-ui";
+
+.Main {
+  display: flex;
+  flex-direction: column;
+
+  .disposition-v {
+    display: flex;
+    flex-direction: row;
+
+    .selectionBlock {
+      background: rgb(118, 196, 169);
+      width: 30%;
+      height: 400px;
+    }
+
+    .disposition-g {
+      display: flex;
+      flex-direction: column;
+      width: 70%;
+
+      .entryFieldBlock {
+        background: rgb(121, 116, 194);
+        height: 200px;
+      }
+
+      .previewBlock {
+        background: rgb(86, 133, 144);
+        height: 200px;
+      }
+    }
+  }
+
+  .terminalBlock {
+    background: rgb(123, 120, 120);
+    height: 200px;
+  }
+}
