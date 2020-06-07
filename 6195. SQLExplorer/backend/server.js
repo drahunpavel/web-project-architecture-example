@@ -1,17 +1,13 @@
 const express = require("express");
 const path = require("path");
-
-const webserver = express();
-
-// //route
-// const homeRouter = require('./routes/home');
-// const showAll = require('./routes/showAll');
-// const processFile = require('./routes/fileProcessing');
-
-webserver.use(express.static("public"));
-webserver.use(express.json()); // мидлварь, умеющая обрабатывать тело запроса в формате JSON
+const bodyParser = require("body-parser");
 
 const { logLineAsync, port, logFN } = require("./utils/utils");
+//route
+const routeDB = require("./routes/routeDB");
+
+const webserver = express();
+webserver.use(bodyParser.json()); // данные запросов будут в JSON-формате
 
 //cors
 webserver.use((req, res, next) => {
@@ -28,9 +24,7 @@ webserver.use((req, res, next) => {
   next();
 });
 
-// webserver.use('/', homeRouter);
-// webserver.use('/showAll', showAll);
-// webserver.use('/file', processFile);
+webserver.use("/db", routeDB);
 
 webserver.listen(port, () => {
   logLineAsync(logFN, `[${port}] ` + "web server is running");
