@@ -5,15 +5,17 @@
 .Main {
   display: flex;
   flex-direction: column;
+  background: rgb(228, 228, 228);
 
   .disposition-v {
     display: flex;
     flex-direction: row;
 
     .selectionBlock {
-      background: rgb(118, 196, 169);
+      border: 1px solid rgb(145, 145, 145);
       width: 30%;
-      height: 400px;
+      height: 410px;
+      margin: 5px;
     }
 
     .disposition-g {
@@ -22,19 +24,41 @@
       width: 70%;
 
       .entryFieldBlock {
-        background: rgb(121, 116, 194);
+        border: 1px solid rgb(145, 145, 145);
         height: 200px;
+        margin: 5px;
       }
 
       .previewBlock {
-        background: rgb(86, 133, 144);
+        border: 1px solid rgb(145, 145, 145);
         height: 200px;
+        margin: 5px;
       }
     }
   }
 
   .terminalBlock {
-    background: rgb(123, 120, 120);
+    border: 1px solid rgb(145, 145, 145);
     height: 200px;
+    margin: 5px;
+  }
+}
+
+.entryFieldBlock-content {
+  display: flex;
+  flex-direction: column;
+
+  .controlPanel {
+    margin: 10px;
+  }
+
+  .entry {
+    padding: 5px;
+
+    textarea {
+      width: 100%;
+      height: 140px;
+      resize: none;
+    }
   }
 }
