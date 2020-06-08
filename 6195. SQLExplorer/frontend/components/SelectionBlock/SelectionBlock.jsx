@@ -23,23 +23,30 @@ export const SelectionBlock = () => {
   const [dbArr, setdbArr] = useState([]);
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    // setAge(10);
-    async function fetchData() {
-      const response = await API.getDB();
-      return response;
-    }
+  async function fetchData() {
+    const response = await API.getDB();
+    return response;
+  }
 
+  async function fetchSetDB(data) {
+    const response = await API.setDB(data);
+    return response;
+  }
+
+  useEffect(() => {
     fetchData().then((res) => {
       setdbArr(res.data.data);
       if (res.data.data.length) {
         // setDb(res.data.data[0].Database);
         setDb("learning_db");
+
+        fetchSetDB({ db: "learning_db" });
       }
     });
   }, []); //вызыв будет 1 раз - это эмуляция componentDidMount
 
   const handleChange = (event) => {
+    fetchSetDB({ db: event.target.value });
     setDb(event.target.value);
   };
 

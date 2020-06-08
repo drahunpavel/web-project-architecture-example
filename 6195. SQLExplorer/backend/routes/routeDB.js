@@ -18,12 +18,12 @@ const {
   getModifiedRowsCount,
 } = require("../utils/db_utils");
 
-const poolConfig = {
+let poolConfig = {
   connectionLimit: 5, // полагаем что БД выдержит 2 соединения, т.е. в пуле будет максимум 2 соединения
   host: "localhost", // на каком компьютере расположена база данных
   user: "root", // каким пользователем подключаемся (на учебном сервере - "root")
   password: "", // каким паролем подключаемся (на учебном сервере - "1234")
-  database: "learning_db", // к какой базе данных подключаемся
+  // database: "learning_db", // к какой базе данных подключаемся
 };
 
 function reportServerError(error, res) {
@@ -40,16 +40,16 @@ function reportRequestError(error, res) {
   logLineAsync(logFN, `[${port}] ` + error);
 }
 
-let pool = mysql.createPool(poolConfig);
+let pool;
 
 router.get("/getDB", async (req, res) => {
   logLineAsync(logFN, `[${port}] ` + "service /getDB");
+  pool = mysql.createPool(poolConfig);
+
   let connection = null;
   try {
     connection = await newConnectionFactory(pool, res);
     data = await selectQueryFactory(connection, `SHOW DATABASES`);
-
-    console.log("--data", data);
 
     const dataAnswer = {
       errorCode: 0,
@@ -65,8 +65,37 @@ router.get("/getDB", async (req, res) => {
   }
 });
 
+router.post("/setDB", async (req, res) => {
+  logLineAsync(logFN, `[${port}] ` + "service /setDB");
+  const { body } = req;
+
+  // закрываем пул соединений
+  pool.end(function (err) {
+    if (err) {
+      console.log(err.message);
+      return;
+    }
+  });
+
+  try {
+    poolConfig.database = body.db;
+
+    pool = mysql.createPool(poolConfig);
+
+    const dataAnswer = {
+      errorCode: 0,
+      errorMessage: "OK",
+    };
+
+    res.send(dataAnswer);
+  } catch (error) {
+    reportServerError(error, res); // сюда прилетят любые ошибки
+  }
+});
+
 router.post("/getData", async (req, res) => {
   const { body } = req;
+
   logLineAsync(logFN, `[${port}] ` + "service /getData");
   let conditionType = filterConditionParams(body.condition);
   let connection = null;
