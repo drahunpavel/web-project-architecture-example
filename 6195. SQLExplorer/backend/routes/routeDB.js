@@ -27,7 +27,6 @@ const poolConfig = {
 };
 
 function reportServerError(error, res) {
-  console.log("--", error);
   let data = {
     errorCode: error.errno,
     errorMessage: error.sqlMessage,
@@ -44,12 +43,11 @@ function reportRequestError(error, res) {
 let pool = mysql.createPool(poolConfig);
 
 router.post("/getData", async (req, res) => {
-  console.log("get (read) called");
   const { body } = req;
 
   let conditionType = filterConditionParams(body.condition);
-  console.log("--conditionType", conditionType);
   let connection = null;
+
   try {
     connection = await newConnectionFactory(pool, res);
     let data;
