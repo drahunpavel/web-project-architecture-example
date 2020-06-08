@@ -8,6 +8,7 @@ const webserver = express();
 
 //route
 const routeDB = require("./routes/routeDB");
+const home = require("./routes/home");
 
 // var options = {
 //   inflate: true,
@@ -15,6 +16,7 @@ const routeDB = require("./routes/routeDB");
 //   type: "application/octet-stream",
 // };
 
+webserver.use(express.static("public"));
 webserver.use(bodyParser.json()); // данные запросов будут в JSON-формате
 // webserver.use(bodyParser.raw(options));
 
@@ -33,6 +35,7 @@ webserver.use((req, res, next) => {
   next();
 });
 
+webserver.use("/", home);
 webserver.use("/db", routeDB);
 
 webserver.listen(port, () => {
