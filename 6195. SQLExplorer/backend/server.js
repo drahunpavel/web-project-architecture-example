@@ -3,11 +3,20 @@ const path = require("path");
 const bodyParser = require("body-parser");
 
 const { logLineAsync, port, logFN } = require("./utils/utils");
+
+const webserver = express();
+
 //route
 const routeDB = require("./routes/routeDB");
 
-const webserver = express();
+// var options = {
+//   inflate: true,
+//   limit: "100kb",
+//   type: "application/octet-stream",
+// };
+
 webserver.use(bodyParser.json()); // данные запросов будут в JSON-формате
+// webserver.use(bodyParser.raw(options));
 
 //cors
 webserver.use((req, res, next) => {

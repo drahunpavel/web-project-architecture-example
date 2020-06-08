@@ -28,6 +28,16 @@ function logLineAsync(logFilePath, logLine) {
   });
 }
 
+function filterConditionParams(str) {
+  let result = [
+    str.split(" ", 1).toString(),
+    str.split(" ").slice(1).join(" "),
+  ];
+
+  // return { type: result[0], str };
+  return result[0];
+}
+
 const port = 6195;
 
 const logFN = path.join(__dirname, "../_server.log"); //логирование
@@ -36,4 +46,5 @@ module.exports = {
   logLineAsync,
   port,
   logFN,
+  filterConditionParams,
 };

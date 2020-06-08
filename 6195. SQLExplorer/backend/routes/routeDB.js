@@ -4,7 +4,12 @@ const fs = require("fs");
 const router = express.Router();
 const mysql = require("mysql");
 
-const { logLineAsync, port, logFN } = require("../utils/utils");
+const {
+  logLineAsync,
+  port,
+  logFN,
+  filterConditionParams,
+} = require("../utils/utils");
 const {
   newConnectionFactory,
   selectQueryFactory,
@@ -21,32 +26,69 @@ const poolConfig = {
   database: "learning_db", // к какой базе данных подключаемся
 };
 
+function reportServerError(error, res) {
+  console.log("--", error);
+  let data = {
+    errorCode: error.errno,
+    errorMessage: error.sqlMessage,
+  };
+  res.send(data);
+  logLineAsync(logFN, `[${port}] ` + error);
+}
+
+function reportRequestError(error, res) {
+  res.status(400).end();
+  logLineAsync(logFN, `[${port}] ` + error);
+}
+
 let pool = mysql.createPool(poolConfig);
 
-// READ
-router.get("/groups", async (req, res) => {
+router.post("/getData", async (req, res) => {
   console.log("get (read) called");
+  const { body } = req;
 
+  let conditionType = filterConditionParams(body.condition);
+  console.log("--conditionType", conditionType);
   let connection = null;
   try {
     connection = await newConnectionFactory(pool, res);
+    let data;
+    switch (conditionType) {
+      case "select":
+        data = await selectQueryFactory(connection, `${body.condition}`, []);
+        break;
 
-    let groups = await selectQueryFactory(
-      connection,
-      `
-            select id, name, lessons_start_dat 
-            from grups
-        ;`,
-      []
-    );
+      case "update":
+      case "delete":
+      case "insert":
+      case "create":
+        await modifyQueryFactory(connection, `${body.condition}`); //производит действие в бд
+        data = await getModifiedRowsCount(connection); //возвращает кол-во измененных строк
+        break;
 
-    groups = groups.map((row) => ({
-      id: row.id,
-      name: row.name,
-      lessons_start_dat: Math.round(row.lessons_start_dat / 1000),
-    }));
+      case "show":
+        data = await selectQueryFactory(connection, `${body.condition}`);
+        break;
 
-    res.send(groups);
+      default:
+        data = null;
+        break;
+    }
+
+    //формирую ответ
+    const dataAnswer = {
+      errorCode: 0,
+      errorMessage: "OK",
+      type: conditionType,
+      data,
+    };
+
+    const dataErrorAnswer = {
+      errorCode: 7,
+      errorMessage: `Incorrect or unknown type: ${conditionType}`,
+    };
+
+    res.send(data ? dataAnswer : dataErrorAnswer);
   } catch (error) {
     reportServerError(error, res); // сюда прилетят любые ошибки
   } finally {
