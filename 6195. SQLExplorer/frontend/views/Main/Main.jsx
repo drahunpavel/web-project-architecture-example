@@ -41,9 +41,9 @@ export const Main = () => {
           </div>
         </div>
       </div>
-      <div className="terminalBlock">
+      {/* <div className="terminalBlock">
         <TerminalBlock />
-      </div>
+      </div> */}
     </div>
   );
 };
