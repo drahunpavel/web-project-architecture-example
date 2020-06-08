@@ -1,19 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import Button from "@material-ui/core/Button";
+import { MainContext } from "../../context/mainContext";
 import { API } from "../../network/API";
 
 import("../../index.scss");
 
 export const EntryFieldBlock = () => {
+  const { fetchData } = useContext(MainContext);
   const [value, setValue] = useState("");
 
   async function sendParams() {
-    console.log("--", value);
     if (value.trim()) {
       const data = { condition: value };
-      let res = await API.getData(data);
-      console.log("--res", res);
+      fetchData(data);
     }
   }
 

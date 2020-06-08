@@ -44,7 +44,7 @@ let pool = mysql.createPool(poolConfig);
 
 router.post("/getData", async (req, res) => {
   const { body } = req;
-
+  logLineAsync(logFN, `[${port}] ` + "service /getData");
   let conditionType = filterConditionParams(body.condition);
   let connection = null;
 
@@ -63,6 +63,7 @@ router.post("/getData", async (req, res) => {
       case "create":
         await modifyQueryFactory(connection, `${body.condition}`); //производит действие в бд
         data = await getModifiedRowsCount(connection); //возвращает кол-во измененных строк
+
         break;
 
       case "show":
@@ -87,7 +88,7 @@ router.post("/getData", async (req, res) => {
       errorMessage: `Incorrect or unknown type: ${conditionType}`,
     };
 
-    res.send(data ? dataAnswer : dataErrorAnswer);
+    res.send(data != null ? dataAnswer : dataErrorAnswer);
   } catch (error) {
     reportServerError(error, res); // сюда прилетят любые ошибки
   } finally {
