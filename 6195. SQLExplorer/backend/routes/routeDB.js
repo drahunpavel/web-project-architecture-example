@@ -42,6 +42,29 @@ function reportRequestError(error, res) {
 
 let pool = mysql.createPool(poolConfig);
 
+router.get("/getDB", async (req, res) => {
+  logLineAsync(logFN, `[${port}] ` + "service /getDB");
+  let connection = null;
+  try {
+    connection = await newConnectionFactory(pool, res);
+    data = await selectQueryFactory(connection, `SHOW DATABASES`);
+
+    console.log("--data", data);
+
+    const dataAnswer = {
+      errorCode: 0,
+      errorMessage: "OK",
+      data,
+    };
+
+    res.send(dataAnswer);
+  } catch (error) {
+    reportServerError(error, res); // сюда прилетят любые ошибки
+  } finally {
+    if (connection) connection.release(); // соединение надо закрыть (вернуть в пул) независимо от успеха/ошибки
+  }
+});
+
 router.post("/getData", async (req, res) => {
   const { body } = req;
   logLineAsync(logFN, `[${port}] ` + "service /getData");
