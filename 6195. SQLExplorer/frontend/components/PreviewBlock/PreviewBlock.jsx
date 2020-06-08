@@ -5,21 +5,20 @@ import TableBody from "@material-ui/core/TableBody";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import Paper from "@material-ui/core/Paper";
+import TableHead from "@material-ui/core/TableHead";
 
 import { MainContext } from "../../context/mainContext";
 
 import("../../index.scss");
 
 const useStyles = makeStyles({
-  table: {
-    // minWidth: 150,
-    // height: 200,
-    // overflow: "auto",
-  },
   paper: {
     height: 198,
     width: "100%",
     overflow: "auto",
+  },
+  TableHead: {
+    fontWeight: 900,
   },
 });
 
@@ -27,15 +26,17 @@ export const PreviewBlock = () => {
   const { data } = useContext(MainContext);
   const classes = useStyles();
 
+  const buildTableHeader = (data) => {
+    let arr = [];
+
+    for (var key in data) {
+      arr.push(key);
+    }
+
+    return arr;
+  };
+
   const renderContent = (data) => {
-    console.log("--data", data, data.errorCode && data.errorCode);
-    // switch (code) {
-    //   case "7": {
-    //     return {};
-    //   }
-    //   default:
-    //     return <div>Данных нет</div>;
-    // }
     if (data.errorCode === 0) {
       switch (data.type) {
         case "update":
@@ -43,25 +44,51 @@ export const PreviewBlock = () => {
         case "insert":
         case "create":
           return <div>Changed rows: {data.data}</div>;
+
+        case "select":
+        case "show":
+          if (data.data.length) {
+            let headArr = buildTableHeader(data.data[0]);
+            return (
+              <Paper className={classes.paper}>
+                <Table className={classes.table} aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      {headArr.map((item, index) => (
+                        <TableCell
+                          className={classes.TableHead}
+                          key={index}
+                          align="left"
+                        >
+                          {item}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {data.data.map((row, index) => (
+                      <TableRow key={index}>
+                        {headArr.map((item, index) => {
+                          return (
+                            <TableCell key={index} align="left">
+                              {row[item]}
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Paper>
+            );
+          } else {
+            return <div>Nothing found</div>;
+          }
       }
-      console.log("--", data.data);
-      // return (
-      //   <Paper className={classes.paper}>
-      //     <Table className={classes.table} aria-label="simple table">
-      //       <TableBody>
-      //         {data.data.map((row) => (
-      //           <TableRow key={row.name}>
-      //             <TableCell align="right">{row.name}</TableCell>
-      //           </TableRow>
-      //         ))}
-      //       </TableBody>
-      //     </Table>
-      //   </Paper>
-      // );
     } else if (data.errorCode !== 0) {
       return <div className="error-information">{data.errorMessage}</div>;
     } else {
-      return <div>Данных нет</div>;
+      return <div>Make a request</div>;
     }
   };
 

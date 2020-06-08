@@ -54,7 +54,8 @@ router.post("/getData", async (req, res) => {
     let data;
     switch (conditionType) {
       case "select":
-        data = await selectQueryFactory(connection, `${body.condition}`, []);
+      case "show":
+        data = await selectQueryFactory(connection, `${body.condition}`);
         break;
 
       case "update":
@@ -64,10 +65,6 @@ router.post("/getData", async (req, res) => {
         await modifyQueryFactory(connection, `${body.condition}`); //производит действие в бд
         data = await getModifiedRowsCount(connection); //возвращает кол-во измененных строк
 
-        break;
-
-      case "show":
-        data = await selectQueryFactory(connection, `${body.condition}`);
         break;
 
       default:
