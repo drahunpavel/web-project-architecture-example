@@ -50,6 +50,7 @@ router.post("/getData", async (req, res) => {
 
   try {
     connection = await newConnectionFactory(pool, res);
+
     let data;
     switch (conditionType) {
       case "select":

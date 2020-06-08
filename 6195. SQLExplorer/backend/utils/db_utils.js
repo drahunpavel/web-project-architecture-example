@@ -4,8 +4,13 @@ function newConnectionFactory(pool, res) {
     pool.getConnection(function (err, connection) {
       if (err) {
         if (res) {
-          res.status(500);
-          res.send("");
+          // res.status(500);
+          // res.send("");
+          let data = {
+            errorCode: 8,
+            errorMessage: "Error connecting to the database",
+          };
+          res.send(data);
         }
         console.error(err);
       } else {
