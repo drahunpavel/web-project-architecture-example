@@ -21,10 +21,10 @@ const {
 let poolConfig = {
   connectionLimit: 5, // полагаем что БД выдержит 2 соединения, т.е. в пуле будет максимум 2 соединения
   host: "localhost", // на каком компьютере расположена база данных
-  user: "root", // каким пользователем подключаемся (на учебном сервере - "root")
-  password: "", // каким паролем подключаемся (на учебном сервере - "1234")
-  // user: "drahunpavel", // каким пользователем подключаемся (на учебном сервере - "root")
-  // password: "drahun_pavel", // каким паролем подключаемся (на учебном сервере - "1234")
+  // user: "root", // каким пользователем подключаемся (на учебном сервере - "root")
+  // password: "", // каким паролем подключаемся (на учебном сервере - "1234")
+  user: "drahunpavel", // каким пользователем подключаемся (на учебном сервере - "root")
+  password: "drahun_pavel", // каким паролем подключаемся (на учебном сервере - "1234")
   // database: "learning_db", // к какой базе данных подключаемся
 };
 
@@ -42,24 +42,34 @@ function reportRequestError(error, res) {
   logLineAsync(logFN, `[${port}] ` + error);
 }
 
-let pool;
+let pool = mysql.createPool(poolConfig);
 
 router.get("/getDB", async (req, res) => {
   logLineAsync(logFN, `[${port}] ` + "service /getDB");
-  pool = mysql.createPool(poolConfig);
+  // pool = mysql.createPool(poolConfig);
 
   let connection = null;
   try {
     connection = await newConnectionFactory(pool, res);
     data = await selectQueryFactory(connection, `SHOW DATABASES`);
 
-    const dataAnswer = {
-      errorCode: 0,
-      errorMessage: "OK",
-      data,
-    };
+    if (data) {
+      // закрываем пул соединений
+      pool.end(function (err) {
+        if (err) {
+          console.log(err.message);
+          return;
+        }
+      });
 
-    res.send(dataAnswer);
+      const dataAnswer = {
+        errorCode: 0,
+        errorMessage: "OK",
+        data,
+      };
+
+      res.send(dataAnswer);
+    }
   } catch (error) {
     reportServerError(error, res); // сюда прилетят любые ошибки
   } finally {
