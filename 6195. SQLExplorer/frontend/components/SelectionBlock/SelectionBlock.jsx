@@ -35,8 +35,13 @@ export const SelectionBlock = () => {
 
   useEffect(() => {
     fetchData().then((res) => {
+      if (res.data.errorCode !== 0) {
+        setdbArr([]);
+      } else {
+        setdbArr(res.data.data);
+      }
       setdbArr(res.data.data);
-      if (res.data.data.length) {
+      if (Array.isArray(res.data.data) && res.data.data.length) {
         // setDb(res.data.data[0].Database);
         setDb("learning_db");
 
@@ -73,11 +78,12 @@ export const SelectionBlock = () => {
           value={db}
           onChange={handleChange}
         >
-          {dbArr.map((item, index) => (
-            <MenuItem key={index} value={item.Database}>
-              {item.Database}
-            </MenuItem>
-          ))}
+          {dbArr &&
+            dbArr.map((item, index) => (
+              <MenuItem key={index} value={item.Database}>
+                {item.Database}
+              </MenuItem>
+            ))}
         </Select>
       </FormControl>
     </div>
