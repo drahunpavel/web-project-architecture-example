@@ -46,7 +46,6 @@ let pool = mysql.createPool(poolConfig);
 
 router.get("/getDB", async (req, res) => {
   logLineAsync(logFN, `[${port}] ` + "service /getDB");
-  // pool = mysql.createPool(poolConfig);
 
   let connection = null;
   try {
@@ -55,13 +54,6 @@ router.get("/getDB", async (req, res) => {
 
     if (data) {
       // закрываем пул соединений
-      pool.end(function (err) {
-        if (err) {
-          console.log(err.message);
-          return;
-        }
-      });
-
       const dataAnswer = {
         errorCode: 0,
         errorMessage: "OK",
