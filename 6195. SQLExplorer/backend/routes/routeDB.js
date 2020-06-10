@@ -52,16 +52,13 @@ router.get("/getDB", async (req, res) => {
     connection = await newConnectionFactory(pool, res);
     data = await selectQueryFactory(connection, `SHOW DATABASES`);
 
-    if (data) {
-      // закрываем пул соединений
-      const dataAnswer = {
-        errorCode: 0,
-        errorMessage: "OK",
-        data,
-      };
+    const dataAnswer = {
+      errorCode: 0,
+      errorMessage: "OK",
+      data,
+    };
 
-      res.send(dataAnswer);
-    }
+    res.send(dataAnswer);
   } catch (error) {
     reportServerError(error, res); // сюда прилетят любые ошибки
   } finally {
