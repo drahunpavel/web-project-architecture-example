@@ -1,38 +1,11 @@
 <h1>Login Page</h1>
 
-<form action="/file/upload" method="post" enctype="multipart/form-data" class="col s12">
-    <div class="file-field input-field col s6">
-        <div class="file-path-wrapper">
-            <input class="file-path validate" type="text" required>
-            <label for="comment">Login</label>
-            <span class="helper-text" data-error="Entry Login"></span>
-        </div>
-    </div>
-    <div class="file-field input-field col s6">
-        <div class="file-path-wrapper">
-            <input class="file-path validate" type="text" required>
-            <label for="comment">e-mail</label>
-            <span class="helper-text" data-error="Entry e-mail"></span>
-        </div>
-    </div>
-    <div class="file-field input-field col s6">
-        <div class="file-path-wrapper">
-            <input class="file-path validate" type="text" required>
-            <label for="comment">Password</label>
-            <span class="helper-text" data-error="Entry password"></span>
-        </div>
-    </div>
-    <div class="file-field input-field col s6">
-        <div class="file-path-wrapper">
-            <input class="file-path validate" type="text" required>
-            <label for="comment">Repeat password</label>
-            <span class="helper-text" data-error="Entry password"></span>
-        </div>
-    </div>
-    {{!-- <div class="input-field col s6">
-        <textarea id="comment" class="materialize-textarea" name="comment" required min='5'></textarea>
-        <label for="comment">Comment</label>
-        <span class="helper-text" data-error="Entry сomment"></span>
-    </div> --}}
-    <input type="submit" class="btn btn-primary" value="Send" />
+<form action="/login/loginForm" method="post">
+    <label>Имя</label><br>
+    <input type="text" name="userName" /><br><br>
+    <label>email</label><br>
+    <input type="text" name="email" /><br><br>
+    <label>Пароль</label><br>
+    <input type="password" name="password" /><br><br>
+    <input type="submit" value="Отправить" />
 </form>

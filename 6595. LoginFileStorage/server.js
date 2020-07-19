@@ -1,6 +1,7 @@
 // import mongoose from "mongoose";
 const mongoose = require("mongoose");
 const express = require("express");
+const bodyParser = require("body-parser");
 const path = require("path");
 const exphbs = require("express-handlebars");
 
@@ -14,6 +15,8 @@ const login = require("./routes/login");
 
 webserver.use(express.static("public"));
 webserver.use(express.json()); // мидлварь, умеющая обрабатывать тело запроса в формате JSON
+webserver.use(bodyParser.urlencoded({ extended: false })); //parse application/x-www-form-urlencoded
+webserver.use(bodyParser.json()); //parse application/json
 
 const { logLineAsync, port, logFN } = require("./utils/utils");
 const { mongoDBurl } = require("./local");
