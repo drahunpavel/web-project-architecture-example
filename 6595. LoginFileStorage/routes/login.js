@@ -3,7 +3,7 @@ const { Router } = require("express");
 const router = Router();
 
 const { logLineAsync, port, logFN } = require("../utils/utils");
-const { default: UserController } = require("../dbControllers/UserController");
+const { default: UserController } = require("../Controllers/UserController");
 
 //напрямую к методам класса обратиться нельщя
 //поэтому создается экземпляр класса  и после этого можно обратиться к методам

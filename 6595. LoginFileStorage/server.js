@@ -13,6 +13,9 @@ const showAll = require("./routes/showAll");
 const processFile = require("./routes/fileProcessing");
 const login = require("./routes/login");
 
+const { default: AuthController } = require("./Controllers/auth");
+const Auth = new AuthController();
+
 webserver.use(express.static("public"));
 webserver.use(express.json()); // мидлварь, умеющая обрабатывать тело запроса в формате JSON
 webserver.use(bodyParser.urlencoded({ extended: false })); //parse application/x-www-form-urlencoded
@@ -52,6 +55,7 @@ webserver.use("/", homeRouter);
 webserver.use("/showAll", showAll);
 webserver.use("/file", processFile);
 webserver.use("/login", login);
+webserver.post("/signIn", Auth.signIn);
 
 async function startServer() {
   try {
