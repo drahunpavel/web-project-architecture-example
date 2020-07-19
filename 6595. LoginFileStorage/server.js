@@ -12,11 +12,10 @@ const homeRouter = require("./routes/home");
 const showAll = require("./routes/showAll");
 const processFile = require("./routes/fileProcessing");
 const login = require("./routes/login");
+const Auth = require("./Controllers/Auth");
 
-const { default: AuthController } = require("./Controllers/auth");
-const Auth = new AuthController();
-
-const authMeddleware = require("./Middleware/auth");
+//Middleware
+const authMiddleware = require("./Middleware/auth");
 
 webserver.use(express.static("public"));
 webserver.use(express.json()); // мидлварь, умеющая обрабатывать тело запроса в формате JSON
@@ -38,6 +37,8 @@ webserver.set("view engine", "hbs"); //начинаем использовать
 webserver.set("views", "views"); //вторая views - это папка с html
 
 webserver.use(express.static(path.resolve(__dirname, "./src")));
+
+//Middleware
 //cors
 webserver.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -52,13 +53,14 @@ webserver.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Credentials", true);
   next();
 });
-
-webserver.use(authMeddleware);
+webserver.use(authMiddleware);
 
 webserver.use("/", homeRouter);
 webserver.use("/showAll", showAll);
 webserver.use("/file", processFile);
 webserver.use("/login", login);
+
+//auth
 webserver.post("/signIn", Auth.signIn);
 
 async function startServer() {
