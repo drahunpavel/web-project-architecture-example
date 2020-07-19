@@ -1,5 +1,6 @@
+// import mongoose from "mongoose";
+const mongoose = require("mongoose");
 const express = require("express");
-// const multer = require("multer");
 const path = require("path");
 const exphbs = require("express-handlebars");
 
@@ -13,15 +14,9 @@ const login = require("./routes/login");
 
 webserver.use(express.static("public"));
 webserver.use(express.json()); // мидлварь, умеющая обрабатывать тело запроса в формате JSON
-// webserver.use(multer({dest:"uploads"}).single("filedata"));
-// const upload = multer({ dest: "uploads" });
 
-const {
-  logLineAsync,
-  getRandomFileName,
-  port,
-  logFN,
-} = require("./utils/utils");
+const { logLineAsync, port, logFN } = require("./utils/utils");
+const { mongoDBurl } = require("./local");
 
 //конфигураиця exphbs
 const hbs = exphbs.create({
@@ -55,6 +50,22 @@ webserver.use("/showAll", showAll);
 webserver.use("/file", processFile);
 webserver.use("/login", login);
 
-webserver.listen(port, () => {
-  logLineAsync(logFN, `[${port}] ` + "web server is running");
-});
+async function startServer() {
+  try {
+    //подключение к БД
+    const url = mongoDBurl;
+    await mongoose.connect(url, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+
+    webserver.listen(port, () => {
+      logLineAsync(logFN, `[${port}] ` + "web server is running");
+    });
+  } catch (err) {
+    console.log("-error connect", err);
+    logLineAsync(logFN, `[${port}] ` + "error connect", err);
+  }
+}
+
+startServer();
