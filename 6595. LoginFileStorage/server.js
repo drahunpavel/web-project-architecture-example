@@ -16,6 +16,8 @@ const login = require("./routes/login");
 const { default: AuthController } = require("./Controllers/auth");
 const Auth = new AuthController();
 
+const authMeddleware = require("./Middleware/auth");
+
 webserver.use(express.static("public"));
 webserver.use(express.json()); // мидлварь, умеющая обрабатывать тело запроса в формате JSON
 webserver.use(bodyParser.urlencoded({ extended: false })); //parse application/x-www-form-urlencoded
@@ -50,6 +52,8 @@ webserver.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Credentials", true);
   next();
 });
+
+webserver.use(authMeddleware);
 
 webserver.use("/", homeRouter);
 webserver.use("/showAll", showAll);
