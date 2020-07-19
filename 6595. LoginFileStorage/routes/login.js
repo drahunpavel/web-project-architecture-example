@@ -22,7 +22,7 @@ router.post("/loginForm", async (req, res, next) => {
   const { userName, email, password } = req.body;
 
   let data = await User.create({ userName, email, password });
-  if (data) res.send(`добавлен в таблицу пользователь ${data.user}`);
+  if (data) res.send(`добавлен в таблицу пользователь ${data.email}`);
   else res.status(500).send("Ошибочка");
 });
 

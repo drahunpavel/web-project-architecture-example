@@ -15,7 +15,7 @@ class UserController {
   async create(req, res) {
     const { userName, email, password } = req;
     const newUser = new UserModel({
-      user: userName,
+      // user: userName,
       email,
       password,
     });
