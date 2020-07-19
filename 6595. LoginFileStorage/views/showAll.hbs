@@ -1,0 +1,24 @@
+<h1>All Files</h1>
+
+<div class="row">
+    {{#if allFilesArr.length}}
+    {{#each allFilesArr}}
+    <div class="col s4">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">{{short_filename}}</span>
+            {{#if comment.length}}
+                <p>{{comment}}</p>
+            {{else}}
+                <p>No comment</p>
+            {{/if}}
+            </div>
+            <div class="card-action">
+                <a href="/file/{{tmp_filename}}/download">download</a>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+    {{else}} <p>No current files</p>
+    {{/if}}
+</div>

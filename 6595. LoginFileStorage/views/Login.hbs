@@ -1,0 +1,23 @@
+<h1>Login Page</h1>
+
+<form action="/file/upload" method="post" enctype="multipart/form-data" class="col s12">
+    <div class="file-field input-field col s6">
+        <div class="file-path-wrapper">
+            <input class="file-path validate" type="text">
+        </div>
+    </div>
+    <div class="input-field col s6">
+        <textarea id="comment" class="materialize-textarea" name="comment" required min='5'></textarea>
+        <label for="comment">Comment</label>
+        <span class="helper-text" data-error="Entry сomment"></span>
+    </div>
+    <div class="card-panel">
+        {{#if showLoad}}
+        <div class="progress">
+            <div class="indeterminate"></div>
+        </div>
+        {{/if}}
+        <span id='showResult' class="cyan-text text-darken-4"><b>The file does not load</b></span>
+    </div>
+    <input type="submit" class="btn btn-primary" value="Add new file" />
+</form>
