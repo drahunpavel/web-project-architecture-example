@@ -15,7 +15,7 @@ const login = require("./routes/login");
 const Auth = require("./Controllers/Auth");
 
 //Middleware
-const authMiddleware = require("./Middleware/auth");
+// const authMiddleware = require("./Middleware/auth");
 
 webserver.use(express.static("public"));
 webserver.use(express.json()); // мидлварь, умеющая обрабатывать тело запроса в формате JSON
@@ -62,12 +62,14 @@ webserver.use("/login", login);
 
 //auth
 webserver.post("/signIn", Auth.signIn);
+webserver.post("/refresh-tokens", Auth.refreshTokens);
 
 async function startServer() {
   try {
     //подключение к БД
     const url = mongoDBurl;
     await mongoose.connect(url, {
+      useFindAndModify: false,
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
