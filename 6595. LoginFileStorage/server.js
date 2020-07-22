@@ -15,7 +15,7 @@ const login = require("./routes/login");
 const Auth = require("./Controllers/Auth");
 
 //Middleware
-// const authMiddleware = require("./Middleware/auth");
+const authMiddleware = require("./Middleware/auth");
 
 webserver.use(express.static("public"));
 webserver.use(express.json()); // мидлварь, умеющая обрабатывать тело запроса в формате JSON
@@ -53,16 +53,16 @@ webserver.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Credentials", true);
   next();
 });
-webserver.use(authMiddleware);
-
-webserver.use("/", homeRouter);
-webserver.use("/showAll", showAll);
-webserver.use("/file", processFile);
-webserver.use("/login", login);
+// webserver.use(authMiddleware);
 
 //auth
 webserver.post("/signIn", Auth.signIn);
-webserver.post("/refresh-tokens", Auth.refreshTokens);
+webserver.post("/refreshTokens", Auth.refreshTokens);
+
+webserver.use("/", authMiddleware, homeRouter);
+webserver.use("/showAll", authMiddleware, showAll);
+webserver.use("/file", authMiddleware, processFile);
+webserver.use("/file", authMiddleware, login);
 
 async function startServer() {
   try {

@@ -11,6 +11,10 @@ const uptadeTokens = (userId) => {
   const accessToken = authHelper.generateAccessToken(userId);
   const refreshToken = authHelper.generateRefreshToken();
 
+  // authHelper.replaceDbRefreshToken(refreshToken.id, userId);
+  // // .then(() => );
+
+  // return { accessToken, refreshToken: refreshToken.token };
   return authHelper.replaceDbRefreshToken(refreshToken.id, userId).then(() => ({
     accessToken,
     refreshToken: refreshToken.token,
@@ -19,8 +23,8 @@ const uptadeTokens = (userId) => {
 
 const signIn = (req, res) => {
   const { email, password } = req.body;
-  //достаю пользователя из БД по его email
 
+  //достаю пользователя из БД по его email
   UserModel.findOne({ email })
     .exec()
     .then((user) => {
@@ -35,12 +39,15 @@ const signIn = (req, res) => {
       if (isValid) {
         // const token = jwt.sign(user._id.toString(), jwtSecret);
         // res.json({ token });
-        uptadeTokens(user._id).then((tokens) => res.json(tokens));
+        uptadeTokens(user._id).then((tokens) => {
+          res.json(tokens);
+        });
       } else {
         res.status(401).json({ message: "Invalid credentials!" });
       }
     })
     .catch((err) => res.status(500).json({ message: err.message }));
+  // .catch((err) => res.status(500).json({ message: "словил исключение" }));
 };
 
 const refreshTokens = (req, res) => {
@@ -57,7 +64,7 @@ const refreshTokens = (req, res) => {
       res.status(400).json({ message: "Token expired" });
       return;
     } else if (e instanceof jwt.JsonWebTokenError) {
-      res / status(400).json({ message: "Invalid token" });
+      res.status(400).json({ message: "Invalid token" });
       return;
     }
   }

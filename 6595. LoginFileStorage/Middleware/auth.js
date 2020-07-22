@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { jwtSecret, tokensConfig } = require("../local").jwtConfig;
+const { jwtSecret } = require("../local").jwtConfig;
 
 //проверка на наличие токена
 module.exports = (req, res, next) => {
@@ -14,6 +14,7 @@ module.exports = (req, res, next) => {
   //try-catch по причине того, что verify бросает ексепшен, если токен не валидный
   try {
     const payload = jwt.verify(token, jwtSecret);
+    //проверка на то, что истекло время жизни токена
     if (payload.type !== "access") {
       res.status(401).json({ message: "Invalid token" });
       return;

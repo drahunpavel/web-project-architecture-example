@@ -27,11 +27,10 @@ const generateRefreshToken = () => {
   };
 };
 
-const replaceDbRefreshToken = (tokenId, userId) => {
+const replaceDbRefreshToken = (tokenId, userId) =>
   TokenModel.findOneAndRemove({ userId })
     .exec()
     .then(() => TokenModel.create({ tokenId, userId }));
-};
 
 module.exports = {
   generateAccessToken,
