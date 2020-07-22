@@ -59,10 +59,10 @@ webserver.use((req, res, next) => {
 webserver.post("/signIn", Auth.signIn);
 webserver.post("/refreshTokens", Auth.refreshTokens);
 
+webserver.use("/login", login);
 webserver.use("/", authMiddleware, homeRouter);
 webserver.use("/showAll", authMiddleware, showAll);
 webserver.use("/file", authMiddleware, processFile);
-webserver.use("/file", authMiddleware, login);
 
 async function startServer() {
   try {

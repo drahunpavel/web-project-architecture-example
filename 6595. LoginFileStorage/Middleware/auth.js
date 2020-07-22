@@ -5,7 +5,15 @@ const { jwtSecret } = require("../local").jwtConfig;
 module.exports = (req, res, next) => {
   const authHeader = req.get("Authorization"); //получаю хеадер авторизации
   if (!authHeader) {
-    res.status(401).json({ message: "Token not provider" });
+    // res.status(401);
+    // res.redirect("/login");
+    res.render("Information", {
+      title: "Information page",
+      message: "You are not authorized",
+      isLink: true,
+      linkTitle: "Log in",
+      link: "/login",
+    });
     return;
   }
 
