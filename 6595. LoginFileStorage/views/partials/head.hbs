@@ -47,8 +47,9 @@
                 localStorage.setItem('refreshToken', json.refreshToken)
             } catch (error) {
                 document.cookie = `accessToken=${lcAccessToken}; max-age=0`;
-                localStorage.setItem('accessToken', "")
-                localStorage.setItem('refreshToken', '')
+                localStorage.setItem('accessToken', "");
+                localStorage.setItem('refreshToken', '');
+                localStorage.setItem('user', '');
                 console.error('Ошибка:', error);
             }
         }, 30000)
