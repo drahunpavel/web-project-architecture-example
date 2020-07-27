@@ -72,15 +72,39 @@ const refreshTokens = (req, res) => {
   try {
     payload = jwt.verify(refreshToken, jwtSecret);
     if (payload.type !== "refresh") {
-      res.status(400).json({ message: "Invalid token" });
+      // res.status(400).json({ message: "Invalid token" });
+      res.render("Information", {
+        title: "Information page",
+        message: "You are not authorized",
+        isLink: true,
+        linkTitle: "Log in",
+        link: "/login",
+        //expiresIn: 60000,
+      });
       return;
     }
   } catch (e) {
     if (e instanceof jwt.TokenExpiredError) {
-      res.status(400).json({ message: "Token expired" });
+      // res.status(400).json({ message: "Token expired" });
+      res.render("Information", {
+        title: "Information page",
+        message: "You are not authorized",
+        isLink: true,
+        linkTitle: "Log in",
+        link: "/login",
+        //expiresIn: 60000,
+      });
       return;
     } else if (e instanceof jwt.JsonWebTokenError) {
-      res.status(400).json({ message: "Invalid token" });
+      // res.status(400).json({ message: "Invalid token" });
+      res.render("Information", {
+        title: "Information page",
+        message: "You are not authorized",
+        isLink: true,
+        linkTitle: "Log in",
+        link: "/login",
+        //expiresIn: 60000,
+      });
       return;
     }
   }

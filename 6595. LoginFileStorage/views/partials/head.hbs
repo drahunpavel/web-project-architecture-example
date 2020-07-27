@@ -27,11 +27,11 @@
     if (lcAccessToken && lcRefreshToken) {
         document.cookie = `accessToken=${lcAccessToken}; path=/; expires=Tue, 19 Jan 2038 03:14:07 GMT`
 
-        console.log('--данные есть')
+
         const url = 'http://localhost:6595/refreshTokens';
         const data = { refreshToken: lcRefreshToken };
 
-        setInterval(async function () {
+        let timer = setInterval(async function () {
             try {
                 const response = await fetch(url, {
                     method: 'POST',
@@ -41,7 +41,7 @@
                     }
                 });
                 const json = await response.json();
-                console.log('--обновление')
+
                 document.cookie = `accessToken=${json.accessToken}; path=/; expires=Tue, 19 Jan 2038 03:14:07 GMT`
                 localStorage.setItem('accessToken', json.accessToken)
                 localStorage.setItem('refreshToken', json.refreshToken)
@@ -50,6 +50,7 @@
                 localStorage.setItem('accessToken', "");
                 localStorage.setItem('refreshToken', '');
                 localStorage.setItem('user', '');
+                clearInterval(timer);
                 console.error('Ошибка:', error);
             }
         }, 30000)
