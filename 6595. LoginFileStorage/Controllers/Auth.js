@@ -10,44 +10,59 @@ const authHelper = require("../Auth/authHelper");
 const uptadeTokens = (userId) => {
   const accessToken = authHelper.generateAccessToken(userId);
   const refreshToken = authHelper.generateRefreshToken();
-
-  // authHelper.replaceDbRefreshToken(refreshToken.id, userId);
-  // // .then(() => );
-
-  // return { accessToken, refreshToken: refreshToken.token };
   return authHelper.replaceDbRefreshToken(refreshToken.id, userId).then(() => ({
     accessToken,
     refreshToken: refreshToken.token,
   }));
 };
 
-const signIn = (req, res) => {
-  const { email, password } = req.body;
+const signIn = async (req, res) => {
+  // const { email, password } = req.body;
+  let { email, password } = req;
 
   //достаю пользователя из БД по его email
-  UserModel.findOne({ email })
+  await UserModel.findOne({ email })
     .exec()
     .then((user) => {
       //если пользователь не найдет, возвращаю 401 ошибку
-      if (!user) res.status(401).json({ message: "User does not exist!" });
+      if (!user) {
+        return res.render("Information", {
+          title: "Information page",
+          message: "User is not found. Please register",
+          isLink: true,
+          linkTitle: "Check in",
+          link: "/check",
+        });
+        // res.status(401).json({ message: "User does not exist!" });
+        // return { status: 401, message: "User does not exist" };
+      }
 
       //если пользователь есть, сравниваю захешированные пароли
       const isValid = bcrypt.compareSync(password, user.password);
       //если пароли совпадают, то создаю веб-токен
-      //пока теконном будет являться id пользователя в БД
       //в токен же добавляю секретный ключ
       if (isValid) {
-        // const token = jwt.sign(user._id.toString(), jwtSecret);
-        // res.json({ token });
         uptadeTokens(user._id).then((tokens) => {
-          res.json(tokens);
+          // res.json({ data: { tokens, user: user.userName } });
+          // res.send({ data: tokens });
+          // return res.redirect("/file/addFile");
+          return res.render("Information", {
+            title: "Information page",
+            message: `Welcome ${user.userName}`,
+            isLink: true,
+            linkTitle: "Home page",
+            link: "/",
+            accessToken: tokens.accessToken,
+            refreshToken: tokens.refreshToken,
+            user: user.userName,
+            expiresIn: 60000,
+          });
         });
       } else {
         res.status(401).json({ message: "Invalid credentials!" });
       }
     })
     .catch((err) => res.status(500).json({ message: err.message }));
-  // .catch((err) => res.status(500).json({ message: "словил исключение" }));
 };
 
 const refreshTokens = (req, res) => {

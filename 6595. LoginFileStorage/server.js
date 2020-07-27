@@ -4,6 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
 const exphbs = require("express-handlebars");
+const cookieParser = require("cookie-parser");
 
 const webserver = express();
 
@@ -12,6 +13,7 @@ const homeRouter = require("./routes/home");
 const showAll = require("./routes/showAll");
 const processFile = require("./routes/fileProcessing");
 const login = require("./routes/login");
+const check = require("./routes/check");
 const Auth = require("./Controllers/Auth");
 
 //Middleware
@@ -54,11 +56,13 @@ webserver.use((req, res, next) => {
   next();
 });
 // webserver.use(authMiddleware);
+webserver.use(cookieParser());
 
 //auth
 webserver.post("/signIn", Auth.signIn);
 webserver.post("/refreshTokens", Auth.refreshTokens);
 
+webserver.use("/check", check);
 webserver.use("/login", login);
 webserver.use("/", authMiddleware, homeRouter);
 webserver.use("/showAll", authMiddleware, showAll);

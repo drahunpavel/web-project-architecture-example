@@ -8,3 +8,49 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     {{!-- <link rel="stylesheet" href="/index.css"> --}}
 </head>
+<script>
+    let accessToken = "{{ accessToken }}"
+    let refreshToken = '{{refreshToken}}'
+    let expiresIn = '{{expiresIn}}'
+
+    if (accessToken && refreshToken && expiresIn) {
+        localStorage.setItem('accessToken', "{{ accessToken }}")
+        localStorage.setItem('refreshToken', '{{refreshToken}}')
+        localStorage.setItem('expiresIn', '{{expiresIn}}')
+    }
+
+    let lcAccessToken = localStorage.getItem('accessToken');
+    let lcRefreshToken = localStorage.getItem('refreshToken');
+    let lcExpiresIn = localStorage.getItem('expiresIn');
+
+    if (lcAccessToken && lcRefreshToken) {
+        document.cookie = `accessToken=${lcAccessToken}; path=/; expires=Tue, 19 Jan 2038 03:14:07 GMT`
+
+        console.log('--данные есть')
+        const url = 'http://localhost:6595/refreshTokens';
+        const data = { refreshToken: lcRefreshToken };
+
+        setInterval(async function () {
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const json = await response.json();
+                console.log('--обновление')
+                document.cookie = `accessToken=${json.accessToken}; path=/; expires=Tue, 19 Jan 2038 03:14:07 GMT`
+                localStorage.setItem('accessToken', json.accessToken)
+                localStorage.setItem('refreshToken', json.refreshToken)
+            } catch (error) {
+                document.cookie = `accessToken=${lcAccessToken}; max-age=0`;
+                localStorage.setItem('accessToken', "")
+                localStorage.setItem('refreshToken', '')
+                console.error('Ошибка:', error);
+            }
+        }, 60000)
+    }
+
+</script>
