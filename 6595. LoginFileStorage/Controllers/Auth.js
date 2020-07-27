@@ -56,6 +56,7 @@ const signIn = async (req, res) => {
             refreshToken: tokens.refreshToken,
             user: user.userName,
             expiresIn: 60000,
+            userName: user.userName,
           });
         });
       } else {

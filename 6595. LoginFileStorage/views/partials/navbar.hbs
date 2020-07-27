@@ -1,14 +1,32 @@
 <nav>
+
+
+
     <div class="nav-wrapper">
         <a href="#" class="brand-logo">App 5695</a>
+
         <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li style="margin-right: 100px;">
+                <h5 id='user'></h5>
+            </li>
+
             {{#if isHome}} <li class="active"><a href="/">Home Page</a></li>
-            {{else}} <li ><a href="/">Home Page</a></li>
+            {{else}} <li><a href="/">Home Page</a></li>
             {{/if}}
 
             {{#if isShowAll}} <li class="active"><a href="/showAll">All files</a></li>
             {{else}} <li><a href="/showAll">All files</a></li>
             {{/if}}
+
+            <li><a class="waves-effect waves-light btn">Logout </a></li>
         </ul>
     </div>
 </nav>
+<script>
+    let lcUser = localStorage.getItem('user');
+    console.log('--lcUser', lcUser)
+    if (lcUser) {
+        let el = document.getElementById('user');
+        el.innerHTML = lcUser
+    }
+</script>
