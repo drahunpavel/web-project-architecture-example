@@ -61,6 +61,7 @@ webserver.use(cookieParser());
 //auth
 webserver.post("/signIn", Auth.signIn);
 webserver.post("/refreshTokens", Auth.refreshTokens);
+webserver.post("/logout", Auth.logout);
 
 webserver.use("/check", check);
 webserver.use("/login", login);

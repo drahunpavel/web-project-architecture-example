@@ -122,7 +122,24 @@ const refreshTokens = (req, res) => {
     .catch((err) => res.status(400).json({ message: err.message }));
 };
 
+const logout = (req, res) => {
+  //здесь должно быть обращение в БД на удаление токена для нуэного юзера
+
+  res.render("Information", {
+    title: "Information page",
+    message: "You are not authorized",
+    isLink: true,
+    linkTitle: "Log in",
+    link: "/login",
+    accessToken: "",
+    refreshToken: "",
+    userName: "",
+  });
+  return;
+};
+
 module.exports = {
   signIn,
   refreshTokens,
+  logout,
 };

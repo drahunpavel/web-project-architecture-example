@@ -43,7 +43,6 @@ class UserController {
   }
 
   update(req, res) {
-    console.log("-================================", req.params, req.body);
     UserModel.findByIdAndUpdate(req.params.id, { $set: req.body }, (err) => {
       if (err) {
         res.send(err);

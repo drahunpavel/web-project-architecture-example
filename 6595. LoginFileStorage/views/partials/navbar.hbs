@@ -18,14 +18,22 @@
             {{else}} <li><a href="/showAll">All files</a></li>
             {{/if}}
 
-            <li><a class="waves-effect waves-light btn">Logout </a></li>
+            {{!-- <li>
+                <form action="/logout" method="post"> <input type="hidden" name="accessToken" value=''><input
+                        type="submit" value="Logout" /></form>
+            </li> --}}
         </ul>
     </div>
 </nav>
 <script>
     let lcUser = localStorage.getItem('user');
-    if (lcUser) {
-        let el = document.getElementById('user');
+
+    let el = document.getElementById('user');
+    if (lcUser && lcAccessToken && el) {
+
         el.innerHTML = lcUser
+    } else {
+        el.innerHTML = ''
     }
+
 </script>
